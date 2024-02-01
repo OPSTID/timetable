@@ -11,7 +11,7 @@
                     <IonToolbar color="transparent">
                         <IonTitle size="large">
                             <IonLabel>
-                                <span class="timetable-gradient-text">Timetable</span>
+                                <span class="timetable-gradient-text">Hello.</span>
                             </IonLabel>
                         </IonTitle>
                     </IonToolbar>
@@ -19,21 +19,21 @@
                 <div class="ion-text-center">
                     <strong>
                         <IonLabel>
-                            <p>ログイン・新規登録してはじめよう</p>
+                            <p>Timetable のある生活をはじめよう。</p>
                         </IonLabel>
                     </strong>
                 </div>
                 <IonSegment v-model="state.tab" class="ion-top">
                     <IonSegmentButton value="login">ログイン</IonSegmentButton>
                     <IonSegmentButton value="signup">新規登録</IonSegmentButton>
-                    <IonSegmentButton value="offline">アカウントなしで利用</IonSegmentButton>
+                    <IonSegmentButton value="offline">お試し</IonSegmentButton>
                 </IonSegment>
                 <div v-if="state.tab === 'login'">
                     <IonList inset>
                         <IonItem>
                             <IonLabel>
                                 <h2><strong>Welcome🎉</strong></h2>
-                                <p class="ion-text-wrap">メールアドレスとご希望のパスワードを入力して「ログイン」をクリックしてください</p>
+                                <p class="ion-text-wrap">登録済みのメールアドレスとパスワードを入力して「ログイン」をタップしてください</p>
                             </IonLabel>
                         </IonItem>
                     </IonList>
@@ -55,7 +55,7 @@
                     <IonList inset>
                         <IonItem>
                             <IonLabel>
-                                <strong>自分のパソコン以外で使用する方へ</strong>
+                                <strong>自分の端末以外で使用する方へ</strong>
                                 <p class="ion-text-wrap">ログインすると、最大60日間ログインしたままになります。あなたのアカウントへの不正アクセスを防ぐため、<strong><u>他人の端末やネットカフェなどでログインする場合は、操作終了後に必ずログアウトしてください。</u></strong></p>
                             </IonLabel>
                         </IonItem>
@@ -120,7 +120,7 @@
                     <IonList inset>
                         <IonItem lines="none">
                             <IonLabel>
-                                <p class="ion-text-wrap">🤖 下のチェックボックスをクリックしてロボットでないことを証明してください</p>
+                                <p class="ion-text-wrap">下のチェックボックスをクリックしてロボットでないことを証明してください🤖</p>
                             </IonLabel>
                             <!--入力内容が正しいかどうか表示-->
                             <IonIcon v-if="state.signupTab.isCompletedRecaptcha()" :icon="checkmarkCircle" color="success"></IonIcon>
@@ -148,15 +148,37 @@
                     </div>
                     <IonList inset>
                         <IonItem>
-                            <IonLabel>
-                                <p>入力いただいたメールアドレス、パスワードは次回以降のログインで必要になりますのでお忘れにならないようにお願い致します</p>
+                            <IonLabel class="ion-text-wrap">
+                                <p>入力いただいたメールアドレス、パスワードは次回以降のログインで必要になりますのでお忘れにならないようにお願い致します🙇‍♀</p>
                             </IonLabel>
                         </IonItem>
                     </IonList>
                 </div>
                 <div v-else>
+                    <div class="ion-padding ion-margin-top ion-text-center">
+                        <IonLabel>
+                            <p><strong>まずはアカウントなしで試してみよう🎉</strong></p>
+                        </IonLabel>
+                        <IonButton expand="block" color="dark">
+                            <strong>アカウントなしではじめる</strong>
+                        </IonButton>
+                    </div>
                     <IonList inset>
-                        
+                        <IonItem>
+                            <IonLabel>
+                                <strong class="ion-text-wrap">ご確認ください</strong>
+                                <p class="ion-text-wrap">ログイン・アカウント作成をせずにTimetableを使用できます。ただし、以下の制限事項がございますのでご確認ください。</p>
+                                <p class="ion-text-wrap">
+                                    <ul>
+                                        <li><IonText color="danger"><strong>複数端末・複数ブラウザ間での同期</strong></IonText>ができません。</li>
+                                        <li>すべてのデータが現在ご利用のブラウザ内に保存されるため、ブラウザのデータが削除されると、<IonText color="danger"><strong>時間割や課題の情報が消滅します。</strong></IonText></li>
+                                        <li>その他、今後実装を計画している機能（通知機能など）を利用できない可能性があります。</li>
+                                        <li><IonText color="primary">お試し目的のみでの利用を推奨しています。</IonText></li>
+                                    </ul>
+                                </p>
+                                <p class="ion-text-wrap">なお、アカウントなしで利用開始後、設定画面でTimetableアカウントを新規作成し、そのアカウントに、すでに作成済みの時間割・課題を引き継ぐことができます。既存のアカウントへの引き継ぎはできません。</p>
+                            </IonLabel>
+                        </IonItem>
                     </IonList>
                 </div>
                 <IonLabel class="ion-margin">
@@ -167,7 +189,7 @@
     </IonPage>
 </template>
 <script setup lang="ts">
-import { IonAvatar, IonButton, IonCheckbox, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSegment, IonSegmentButton, IonText, IonTitle, IonToolbar, loadingController } from '@ionic/vue';
+import { IonAvatar, IonButton, IonCheckbox, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSegment, IonSegmentButton, IonText, IonTitle, IonToolbar, loadingController, toastController } from '@ionic/vue';
 import { alertCircle, checkmarkCircle, chevronForward, informationCircle, key, logoApple, logoGoogle } from 'ionicons/icons';
 import { Checkbox } from 'vue-recaptcha'
 
@@ -225,9 +247,15 @@ const login = async () => {
         message: "ログイン中",
     })
     await loading.present()
-    setTimeout(() => {
+    setTimeout(async () => {
         loading.dismiss()
-        router.replace("/home")
+        const toast = await toastController.create({
+            message:"ログインしました",
+            color:"dark",
+            duration:2000
+        })
+        toast.present()
+        router.replace("/")
     }, 1000)
 }
 
