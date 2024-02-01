@@ -1,8 +1,11 @@
 import { createApp } from 'vue'
+import { createHead } from '@unhead/vue';
+
 import App from './App.vue'
 import router from './router';
 
 import { IonicVue } from '@ionic/vue';
+import { VueRecaptchaPlugin } from 'vue-recaptcha';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -23,10 +26,27 @@ import '@ionic/vue/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import './theme/style.css';
+
+/* make toolbar responsive */
+import ionToolbarResponsive from './lib/ion-toolbar-responsive';
+
 const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
+  .use(IonicVue, {
+    mode: 'ios'
+  })
+  .use(router)
+  // recaptcha settings
+  .use(VueRecaptchaPlugin, {
+    v2SiteKey:"6LdHlmEpAAAAAIHE0L6W3JQMr7rOBUBLOvI8oJf4"
+  })
+
+// use @unhead/vue for vue-recaptcha
+const head = createHead()
+app.use(head)
   
 router.isReady().then(() => {
   app.mount('#app');
 });
+
+const ionToolbarResponsiveInterval = ionToolbarResponsive()

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 135.46666 135.46667"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="icon-one-inkscape.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.5121316"
+     inkscape:cx="-381.73782"
+     inkscape:cy="34.170904"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient3"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#0086e9;stop-opacity:1;"
+         offset="0"
+         id="stop3" />
+      <stop
+         style="stop-color:#9900ff;stop-opacity:1;"
+         offset="1"
+         id="stop4" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3"
+       id="linearGradient4"
+       x1="50.826195"
+       y1="74.771568"
+       x2="90.472534"
+       y2="54.364624"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="font-weight:800;font-size:112.889px;font-family:'LINE Seed JP_TTF';-inkscape-font-specification:'LINE Seed JP_TTF Ultra-Bold';text-align:center;text-anchor:middle;fill:url(#linearGradient4);stroke-width:5.292;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:3403.99"
+       d="m 57.968436,113.67916 q -1.919113,0 -1.919113,-2.032 V 43.687978 H 29.633297 q -1.919113,0 -1.919113,-1.919113 V 23.819514 q 0,-2.032002 1.919113,-2.032002 h 76.087183 q 2.03201,0 2.03201,2.032002 v 17.949351 q 0,1.919113 -2.03201,1.919113 H 79.417346 v 67.959182 q 0,2.032 -2.032002,2.032 z"
+       id="text3"
+       aria-label="T" />
+  </g>
+</svg>
