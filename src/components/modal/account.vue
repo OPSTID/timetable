@@ -16,32 +16,9 @@
                         <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Tinkerbell">
                     </IonAvatar>
                     <IonLabel>
-                        <p><strong>Timetable Account</strong></p>
+                        <p><strong>Timetable User</strong></p>
                         <h1><strong class="timetable-gradient-text" style="font-weight:900">あいうえお</strong></h1>
-                        <p>@super-flower#03512</p>
-                    </IonLabel>
-                </IonItem>
-                <IonItem lines="none">
-                    <IonLabel>
-                        <p>学校</p>
-                        東京大学
-                    </IonLabel>
-                </IonItem>
-                <IonItem lines="none">
-                    <IonLabel>
-                        <p>学年（年度毎に自動的に変更されます）</p>
-                        大学2年
-                    </IonLabel>
-                </IonItem>
-                <IonItem button>
-                    <IonLabel slot="end">
-                        <strong>登録内容を変更する</strong>
-                    </IonLabel>
-                </IonItem>
-                <IonItem>
-                    <IonLabel>
-                        <p class="ion-text-wrap">登録いただいたデータは運営者が本アプリの利用動向を分析する際にのみ利用し、それ以外の目的で利用することはありません。詳しくは、<router-link
-                                to="/">利用規約</router-link> をご確認ください。</p>
+                        <p>2024年4月1日から利用中</p>
                     </IonLabel>
                 </IonItem>
             </IonList>
@@ -104,23 +81,21 @@ const logout = async () => {
         "buttons": [
             {
                 text: "ログアウト",
+                role: 'destructive',
                 async handler() {
                     const loading = await loadingController.create({
                         message: "ログアウト..."
                     })
                     await loading.present()
                     setTimeout(async () => {
-                        loading.dismiss()
                         const toast = await toastController.create({
                             message: "ログアウトしました",
-                            duration: 1500,
                             position: "bottom",
                             color: "dark"
                         })
                         await toast.present()
-                        // モーダルを閉じる
-                        props.dismiss()
-                        router.push("/login")
+                        // ページを再読込して、LPページに移動
+                        location.replace("/")
                     }, 500)
                 }
             },

@@ -4,61 +4,88 @@
     font-family: "LINE Seed JP";
     src: url("/font/LINESeedJP/WOFF/LINESeedJP_OTF_Rg.woff") format("woff");
     src: url("/font/LINESeedJP/WOFF2/LINESeedJP_OTF_Rg.woff2") format("woff2");
-    font-weight:normal;
+    font-weight: normal;
 }
+
 /* Bold */
 @font-face {
     font-family: "LINE Seed JP";
     src: url("/font/LINESeedJP/WOFF/LINESeedJP_OTF_Bd.woff") format("woff");
     src: url("/font/LINESeedJP/WOFF2/LINESeedJP_OTF_Bd.woff2") format("woff2");
-    font-weight:bold;
+    font-weight: bold;
 }
+
 /* Extra Bold */
 @font-face {
     font-family: "LINE Seed JP";
     src: url("/font/LINESeedJP/WOFF/LINESeedJP_OTF_Eb.woff") format("woff");
     src: url("/font/LINESeedJP/WOFF2/LINESeedJP_OTF_Eb.woff2") format("woff2");
-    font-weight:900;
+    font-weight: 900;
 }
+
 /* Thin */
 @font-face {
     font-family: "LINE Seed JP";
     src: url("/font/LINESeedJP/WOFF/LINESeedJP_OTF_Th.woff") format("woff");
     src: url("/font/LINESeedJP/WOFF2/LINESeedJP_OTF_Th.woff2") format("woff2");
-    font-weight:200;
+    font-weight: 200;
 }
 
-:root{
+:root {
     --ion-font-family: "LINE Seed JP", sans-serif;
 }
 
 /* custom styles */
-ion-title.ios.title-large{
-    font-weight:900;
+ion-title.ios.title-large {
+    font-weight: 900;
 }
 
-ion-grid.grid-fixed{
-    max-width:750px !important;
+ion-grid.grid-fixed {
+    max-width: 750px !important;
 }
 
 ion-input div.label-text-wrapper.sc-ion-input-ios,
 ion-input div.label-text-wrapper.sc-ion-input-md {
-  max-width: none;
-  width: 10em;
-  font-weight:bold;
+    max-width: none;
+    width: 10em;
+    font-weight: bold;
 }
+
 ion-input div.label-text-wrapper div.label-text {
-  text-overflow: unset;
-  overflow: visible;
+    text-overflow: unset;
+    overflow: visible;
+}
+
+ion-popover {
+    &::part(content) {
+      min-width: 13em;
+    }
+  }
+
+ion-tab-button{
+    max-width:150px;
 }
 
 /* Timetable Gradient */
-.timetable-gradient{
-    background:linear-gradient(90deg, rgba(0,134,233,1) 0%, rgba(153,0,255,1) 100%);
+.timetable-gradient {
+    background: linear-gradient(90deg, rgba(0, 134, 233, 1) 0%, rgba(153, 0, 255, 1) 100%);
 }
-.timetable-gradient-text{
-    background: linear-gradient(90deg, rgba(0,134,233,1) 0%, rgba(153,0,255,1) 100%);
+
+.timetable-gradient-text {
+    background: linear-gradient(90deg, rgba(0, 134, 233, 1) 0%, rgba(153, 0, 255, 1) 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+a[href]{
+    text-decoration: none;
+}
+
+body {
+    user-select: none;
+}
+
+html, .ion-page, ion-content {
+    scroll-behavior: smooth !important;
 }

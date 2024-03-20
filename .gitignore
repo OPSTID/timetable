@@ -30,3 +30,7 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+# VitePress
+/docs/.vitepress/dist
+/docs/.vitepress/cache

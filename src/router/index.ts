@@ -1,20 +1,119 @@
+import { db } from '@/db';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
   {
+    // LP
     path: '/',
     component: () => import("@/views/index.vue")
   },
   {
-    path: '/login',
-    component: () => import("@/views/login.vue")
+    path: '/member',
+    redirect: '/member/home'
+  },
+  // メインページ
+  {
+    path: '/member',
+    component: () => import("@/MainTab.vue"),
+    children: [
+      // ホーム画面
+      {
+        path: '/member/home',
+        component: () => import("@/views/member/home.vue")
+      },
+      // To-do
+      {
+        path: '/member/to-do',
+        component: () => import("@/views/member/to-do.vue")
+      },
+      // メニュー
+      {
+        path: '/member/menu',
+        component: () => import("@/views/member/menu.vue")
+      }
+    ]
+  },
+
+  // サブページ
+  /* 初期登録済み専用ページ*/
+
+  // To-do を作成
+  {
+    path: '/member/to-do/create',
+    component: () => import("@/views/member/to-do_create.vue")
+  },
+  // 時間割を選択
+  {
+    path: '/member/change-timetable',
+    component: () => import("@/views/member/change-timetable.vue")
+  },
+  // 授業詳細
+  {
+    path: '/member/classes/:classId',
+    component: () => import("@/views/member/classDetail.vue")
+  },
+  // 時限詳細
+  {
+    path: '/member/period/:day/:period',
+    component: () => import("@/views/member/periodDetail.vue")
+  },
+  // 設定
+  {
+    path: '/member/settings',
+    component: () => import("@/views/member/settings.vue")
+  },
+
+  /* 初期登録済み専用ページ終了 */
+
+  // 初期登録ページ
+  {
+    path: '/start',
+    component: () => import("@/views/start.vue")
+  },
+  // アプリのQRコード
+  {
+    path: '/app-qrcode',
+    component: () => import("@/views/app-qrcode.vue")
+  },
+  // マークダウンの表示
+  {
+    path: '/info/:markdownName',
+    component: () => import("@/views/info.vue")
+  },
+  // オープンソースライセンス
+  {
+    path: '/open-source-license',
+    component: () => import("@/views/open-source-license.vue")
+  },
+  // 開発者ツール
+  {
+    path: '/dev-tools',
+    component: () => import("@/views/developer-tools.vue")
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  // "/member" 配下のパス（初期設定済み専用ページ）へアクセスするときは、初期登録が完了しているかを確認
+  if(to.path.match(/^\/member\/.*/)){
+    const result = await db.kvs.get("isInited")
+    // 初期登録済みの場合
+    if (!!result && result.value === true) {
+        // 通常通りナビゲート
+        next()
+    } else {
+        // 初期登録済みでない場合は、初期登録画面に移動
+        next("/start")
+    }
+  } else {
+    // 初期設定済み専用ページ以外は通常通りナビゲート
+    next()
+  }
 })
 
 export default router

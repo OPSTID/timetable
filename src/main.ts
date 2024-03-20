@@ -33,20 +33,21 @@ import ionToolbarResponsive from './lib/ion-toolbar-responsive';
 
 const app = createApp(App)
   .use(IonicVue, {
-    mode: 'ios'
+    mode: 'ios',
+    swipeBackEnabled:false
   })
   .use(router)
   // recaptcha settings
-  .use(VueRecaptchaPlugin, {
+  /*.use(VueRecaptchaPlugin, {
     v2SiteKey:"6LdHlmEpAAAAAIHE0L6W3JQMr7rOBUBLOvI8oJf4"
-  })
+  })*/
 
 // use @unhead/vue for vue-recaptcha
 const head = createHead()
 app.use(head)
   
 router.isReady().then(() => {
-  app.mount('#app');
+  setTimeout(() => app.mount('#app'), 700)
 });
 
 const ionToolbarResponsiveInterval = ionToolbarResponsive()

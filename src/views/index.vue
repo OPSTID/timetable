@@ -1,256 +1,249 @@
 <template>
-  <ion-page ref="page">
-    <ion-header translucent>
-      <ion-toolbar>
-        <ion-title>Timetable</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content :fullscreen="true" color="light">
-      <IonGrid fixed>
-        <ion-header collapse="condense">
-          <ion-toolbar color="transparent">
-            <ion-title size="large">
-              <IonLabel>
-                <span class="timetable-gradient-text">Timetable</span>
-              </IonLabel>
-            </ion-title>
-            <IonButtons slot="end">
-              
-              <IonButton id="open-account-modal">
-                <IonIcon :icon="personCircleOutline" slot="icon-only"></IonIcon>
-              </IonButton>
-              <!--アカウント情報モーダル-->
-              <IonModal ref="accountModal" trigger="open-account-modal" :presenting-element="presentingElement">
-                <Account :dismiss="state.accountModal.dismiss"></Account>
-              </IonModal>
-
-              <IonButton>
-                <IonIcon :icon="cogOutline" slot="icon-only"></IonIcon>
-              </IonButton>
-            </IonButtons>
-          </ion-toolbar>
-        </ion-header>
-        <div class="ion-padding-start ion-padding-end">
-          <IonLabel>
-            <p><strong>あいうえお</strong> さん、こんにちは。</p>
-          </IonLabel>
+    <IonPage>
+        <div v-if="!state.isLoaded">
+            <IonSpinner name="dots" style="position:fixed;top:0;left:0;right:0;bottom:0;margin:auto;width:3em;height:3em;"></IonSpinner>
         </div>
-        <!--課題-->
-        <IonList inset>
-          <IonItem button color="dark" id="open-assignments-modal">
-            <IonIcon :icon="documentsOutline" slot="start"></IonIcon>
-            <IonLabel>
-              <strong>課題</strong>
-              <p>
-                <IonText color="medium">未了の課題があります</IonText>
-              </p>
-            </IonLabel>
-            <IonBadge color="danger" slot="end">1</IonBadge>
-          </IonItem>
-        </IonList>
-        <!--課題モーダル-->
-        <IonModal ref="assignmentsModal" trigger="open-assignments-modal" :presenting-element="presentingElement">
-          <Assignments :dismiss="state.assignmentsModal.dismiss"></Assignments>
-        </IonModal>
-        <!--現在（今後）の授業-->
-        <IonList inset v-if="true">
-          <IonItem button lines="full">
-            <IonLabel>
-              <p>
-                <IonText color="primary"><strong>15分後に開始</strong></IonText><br>1時限・08:50-10:30
-              </p>
-              <h1><strong>教養基礎Ⅰ</strong></h1>
-              <p>オンライン・佐藤</p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonIcon :icon="videocam" slot="start" color="primary"></IonIcon>
-            <IonLabel>
-              <IonText color="primary"><strong>オンライン授業に参加</strong></IonText>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonIcon :icon="linkOutline" slot="start"></IonIcon>
-            <IonLabel class="ion-text-nowrap">
-              講義のホームページ
-              <p>https://example.com/hello-world/hello-world/</p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonIcon :icon="linkOutline" slot="start"></IonIcon>
-            <IonLabel>
-              講義資料
-            </IonLabel>
-          </IonItem>
-        </IonList>
-        <IonList inset v-if="false">
-          <IonItem>
-            <IonIcon :icon="checkmarkCircle" slot="start" color="primary"></IonIcon>
-            <IonLabel>
-              <p>今日の授業はすべて終了しました。<br>お疲れ様でした。</p>
-            </IonLabel>
-          </IonItem>
-        </IonList>
-
-        <!--曜日別の時間割-->
-        <IonListHeader class="ion-padding-bottom">
-          <IonLabel>曜日別の時間割</IonLabel>
-          <IonButton size="small" class="ion-margin-bottom" id="open-timetable-modal">
-            <IonIcon :icon="calendar" slot="start"></IonIcon>
-            時間割表を見る
-          </IonButton>
-          <!--時間割表モーダル-->
-          <IonModal ref="timetableModal" trigger="open-timetable-modal" :presenting-element="presentingElement">
-            <TimetableModal :dismiss="state.timetableModal.dismiss"></TimetableModal>
-          </IonModal>
-        </IonListHeader>
-        <IonSegment scrollable>
-          <IonSegmentButton>日</IonSegmentButton>
-          <IonSegmentButton>月</IonSegmentButton>
-          <IonSegmentButton>火</IonSegmentButton>
-          <IonSegmentButton>水</IonSegmentButton>
-          <IonSegmentButton>木</IonSegmentButton>
-          <IonSegmentButton>金</IonSegmentButton>
-          <IonSegmentButton>土</IonSegmentButton>
-        </IonSegment>
-        <IonList inset>
-          <IonItem button>
-            <IonLabel>
-              <p>1時限目・08:50-10:30</p>
-              <h2><strong>教養基礎Ⅰ</strong></h2>
-              <p>本123・佐藤</p>
-              <p>
-                <IonText color="danger">1 件の未了の課題があります</IonText>
-              </p>
-            </IonLabel>
-            <IonBadge color="primary">Now</IonBadge>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>2時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>3時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>4時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>5時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>6時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>7時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>8時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>9時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-          <IonItem button>
-            <IonLabel>
-              <p>10時限目</p>
-              <p>この時限に授業は登録されていません</p>
-              <p>
-                <IonText color="primary">タップして授業を登録</IonText>
-              </p>
-            </IonLabel>
-          </IonItem>
-        </IonList>
-      </IonGrid>
-    </ion-content>
-  </ion-page>
+        <IonContent v-show="state.isLoaded" class="fade-in">
+            <div class="timetable-gradient ion-padding">
+                <IonGrid fixed>
+                    <IonListHeader>
+                        <IonLabel>
+                            <h1><strong style="font-weight:900;font-size:1.4em;color:#f3f8ff">Timetable</strong></h1>
+                        </IonLabel>
+                        <IonLabel class="ion-text-right ion-margin-bottom">
+                            <p style="color:#fafafa;opacity:0.6">Made by OPSTID</p>
+                        </IonLabel>
+                    </IonListHeader>
+                    <!--パソコン・タブレット用-->
+                    <div class="ion-padding ion-hide-md-down" style="display:flex;align-items:center">
+                        <IonLabel style="color:white;opacity:0.9;flex:2" class="ion-padding">
+                            <h1 style="font-weight:bold;font-size:1.8em">大学生が本気で作った、<br>時間割アプリ</h1>
+                            <h3>よくある "量産型" 時間割アプリとは違います。</h3>
+                            <h2 class="ion-padding-top">
+                                <!--初期設定ボタン-->
+                                <IonItem button color="dark"
+                                    style="border-radius:10px;box-shadow:0 5px 10px rgba(0,0,0,0.4);max-width:300px"
+                                    v-if="!state.isInited" router-link="/start">
+                                    <IonIcon :icon="rocketOutline" slot="start"></IonIcon>
+                                    <IonLabel>
+                                        <h3>
+                                            <IonText color="primary"><strong>30 秒で完了</strong></IonText>
+                                        </h3>
+                                        <h2 class="ion-text-wrap"><strong>初期設定をする</strong></h2>
+                                        <p>パソコンでも今すぐ使えます</p>
+                                    </IonLabel>
+                                </IonItem>
+                                <!--ホーム画面に移動ボタン-->
+                                <IonItem v-else lines="none" button style="border-radius:10px;max-width: 300px;"
+                                    class="ion-margin-top" router-link="/member/home">
+                                    <IonIcon :icon="logInOutline" slot="start"></IonIcon>
+                                    <IonLabel>
+                                        <p>あなたは初期設定済み</p>
+                                        <h2><strong>ホーム画面に移動</strong></h2>
+                                    </IonLabel>
+                                </IonItem>
+                            </h2>
+                        </IonLabel>
+                        <div class="ion-text-center" style="flex:1">
+                            <img src="/img/screenshots/iphone_mock.png" class="fade-in"
+                                style="border-radius:30px;max-height:500px;filter:drop-shadow(0 0px 10px rgba(255,255,255,0.3))">
+                        </div>
+                    </div>
+                    <!--スマートフォン用-->
+                    <div class="ion-padding ion-text-center ion-hide-md-up">
+                        <IonLabel style="color:white;opacity:0.9;font-size:1.2em;">
+                            <h1 style="font-weight:bold;font-size:">大学生が本気で作った、<br>時間割アプリ</h1>
+                            <img src="/img/screenshots/iphone_mock.png"
+                                style="max-height:35vh;filter:drop-shadow(0 0 10px rgba(255,255,255,0.8))"
+                                class="ion-padding fade-in">
+                            <h2 class="ion-padding-top">
+                                <IonItem lines="none" button color="dark"
+                                    style="border-radius:10px;box-shadow:0 6px 10px rgba(0,0,0,0.3)" v-if="!state.isInited"
+                                    router-link="/start">
+                                    <IonIcon :icon="rocketOutline" slot="start"></IonIcon>
+                                    <IonLabel>
+                                        <h3>
+                                            <IonText color="primary"><strong>30 秒で完了</strong></IonText>
+                                        </h3>
+                                        <h2 class="ion-text-wrap"><strong>初期設定する</strong></h2>
+                                        <p>今すぐ使えます</p>
+                                    </IonLabel>
+                                </IonItem>
+                                <IonItem v-else lines="none" button style="border-radius:10px;" class="ion-margin-top"
+                                    router-link="/member/home">
+                                    <IonIcon :icon="logInOutline" slot="start"></IonIcon>
+                                    <IonLabel>
+                                        <p>あなたは初期設定済み</p>
+                                        <h2><strong>ホーム画面に移動</strong></h2>
+                                    </IonLabel>
+                                </IonItem>
+                            </h2>
+                            <h3 class="ion-text-center ion-padding-top">
+                                <IonIcon :icon="chevronDown" size="large"></IonIcon>
+                            </h3>
+                        </IonLabel>
+                    </div>
+                </IonGrid>
+            </div>
+            <IonGrid fixed id="detail">
+                <IonListHeader>
+                    <IonLabel>
+                        <strong style="font-weight:900;">Features</strong>
+                        <p>特徴</p>
+                    </IonLabel>
+                </IonListHeader>
+                <IonList lines="none">
+                    <IonItem class="ion-padding-top">
+                        <IonIcon :icon="school" slot="start"></IonIcon>
+                        <IonLabel>
+                            <h1 class="ion-text-wrap"><strong>大学生が運営</strong></h1>
+                            <p class="ion-text-wrap">
+                                大学生が運営しているから、大学生目線での使いやすさを考えて作られています。
+                            </p>
+                        </IonLabel>
+                    </IonItem>
+                    <IonItem class="ion-padding-top">
+                        <IonIcon :icon="star" color="warning" slot="start"></IonIcon>
+                        <IonLabel>
+                            <h1 class="ion-text-wrap"><strong>すぐに開始。広告課金なし</strong></h1>
+                            <p class="ion-text-wrap">
+                                面倒くさいアカウント作成などはなく、すぐに始められます。(※ 1、※ 2)<br>また本サービスは、広告・課金無しで快適にご利用いただけます。(※ 3、※ 4)
+                            </p>
+                        </IonLabel>
+                    </IonItem>
+                    <IonItem class="ion-padding-top">
+                        <IonIcon :icon="syncCircle" color="primary" slot="start"></IonIcon>
+                        <IonLabel>
+                            <h1><strong>パソコンでも使える</strong></h1>
+                            <p class="ion-text-wrap">
+                                ブラウザで使えるから、授業中に開いているパソコンで。電車や家で使っているスマホで。スマートに時間割を確認できます。QRコードで他の端末に時間割をコピーできます。
+                            </p>
+                        </IonLabel>
+                    </IonItem>
+                    <IonItem class="ion-padding-top">
+                        <IonIcon :icon="checkmarkCircle" color="success" slot="start"></IonIcon>
+                        <IonLabel>
+                            <h1><strong>本当に必要な機能のみ</strong></h1>
+                            <p class="ion-text-wrap">
+                                時間割管理機能にプラスし、他のアプリには（おそらく）ない、けど本当に必要な以下の機能を搭載。</p>
+                        </IonLabel>
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel>
+                            <p class="ion-text-wrap">
+                            <ul class="ion-text-wrap">
+                                <li>次の授業の情報をホーム画面ですぐ確認</li>
+                                <li>オンライン授業もホーム画面から 1 タップですぐ参加。</li>
+                                <li>パソコンでもスマホでも使える。</li>
+                            </ul>
+                            余計な機能ばかりの時間割アプリはやめて、Timetable を使ってみませんか？
+                            </p>
+                        </IonLabel>
+                    </IonItem>
+                    <IonItem class="ion-padding-top">
+                        <IonIcon :icon="documents" color="danger" slot="start"></IonIcon>
+                        <IonLabel>
+                            <h1><strong>To-do リスト</strong></h1>
+                            <p class="ion-text-wrap">課題などをまとめて管理できます。</p>
+                        </IonLabel>
+                    </IonItem>
+                    <IonItem class="ion-padding-top">
+                        <IonLabel>
+                            <h3><strong>注意事項</strong></h3>
+                            <p class="ion-text-wrap">(※ 1) 初期設定の際に、「利用規約」及び「プライバシーポリシー」をご確認、ご同意いただきます。</p>
+                            <p class="ion-text-wrap">(※ 2) すべてのデータがブラウザ内のデータ保存領域 (IndexedDB) に保存されます。</p>
+                            <p class="ion-text-wrap">(※ 3)
+                                データをユーザー様がお使いのブラウザ内に保持することで、会員情報管理、データベース管理などをなくし、セキュリティ管理を最小限で実現できるようになり、クラウドサービスを使用しないことで費用をカットしています。
+                            </p>
+                            <p class="ion-text-wrap">(※ 4) 本サービス使用時に発生する通信費は、ユーザー様の負担となります。</p>
+                            <p class="ion-text-wrap ion-padding-top">※
+                                実際に大学生が大学生活を送りながらワンオペで運営しています。そのため不具合の修正などに時間を要することがあります。</p>
+                            <p class="ion-text-wrap">※
+                                <a href="/info/terms?closebutton=1" target="_blank">利用規約</a>
+                                にも記載しておりますが、本サービスは全てあなたの責任のもとにご利用いただきます。本サービスの不具合、ユーザー様の操作ミスなどにより、ユーザー様が落単などの不利益を被ったとしても運営者は一切の責任を負いません。
+                            </p>
+                        </IonLabel>
+                    </IonItem>
+                </IonList>
+                <div class="ion-padding">
+                    <div class="ion-text-center" v-if="!state.isInited">
+                        <p><strong>＼ まずは使ってみよう ／</strong></p>
+                        <IonItem lines="none" button color="dark"
+                            style="border-radius:10px;box-shadow:0 0 10px rgba(255,255,255,0.7)"
+                            router-link="/start">
+                            <IonIcon :icon="rocketOutline" slot="start"></IonIcon>
+                            <IonLabel>
+                                <h3>
+                                    <IonText color="primary"><strong>30 秒で完了</strong></IonText>
+                                </h3>
+                                <h2 class="ion-text-wrap"><strong>初期設定する</strong></h2>
+                            </IonLabel>
+                        </IonItem>
+                    </div>
+                    <IonItem v-else lines="none" button color="light" style="border-radius:10px;" class="ion-margin-top"
+                        router-link="/member/home">
+                        <IonIcon :icon="logInOutline" slot="start"></IonIcon>
+                        <IonLabel>
+                            <p>あなたは初期設定済み</p>
+                            <h2><strong>ホーム画面に移動</strong></h2>
+                        </IonLabel>
+                    </IonItem>
+                </div>
+            </IonGrid>
+            <div class="ion-padding ion-text-center">
+                <IonLabel>
+                    <p>Images by <a href="https://www.freepik.com/" target="_blank">Freepik</a></p>
+                    <p>&copy; 2024-present <a href="https://x.com/opstid_dev">OPSTID</a></p>
+                </IonLabel>
+            </div>
+        </IonContent>
+    </IonPage>
 </template>
+<style scoped>
+@keyframes fadeIn {
+    from {
+        opacity: 0
+    }
 
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 2s;
+}
+</style>
 <script setup lang="ts">
-import Account from '@/components/modal/account.vue';
-import Assignments from '@/components/modal/assignments.vue';
-import TimetableModal from '@/components/modal/timetable-modal.vue';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonLabel, IonSegment, IonSegmentButton, IonList, IonItem, IonText, IonListHeader, IonButton, IonIcon, IonBadge, IonModal, IonButtons, IonCol, IonRow } from '@ionic/vue';
-import { useHead } from "@unhead/vue"
-import { calendar, calendarOutline, checkmarkCircle, cogOutline, documents, documentsOutline, linkOutline, personCircleOutline, personOutline, tabletLandscape, videocam } from 'ionicons/icons';
-import { onMounted, reactive, ref } from 'vue';
+import { IonButton, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonSpinner, IonText, IonThumbnail } from '@ionic/vue';
+import { checkmarkCircle, chevronDown, chevronForward, documents, documentsOutline, happyOutline, laptopOutline, logInOutline, logoTwitter, rocketOutline, school, star, syncCircle } from 'ionicons/icons';
+import { onMounted, onUnmounted, reactive } from 'vue';
 
-
-const page = ref()
-const assignmentsModal = ref()
-const accountModal = ref()
-const timetableModal = ref()
-
-const presentingElement = ref()
+import { db } from '@/db';
 
 const state = reactive({
-  // 課題モーダル
-  assignmentsModal: {
-    dismiss() {
-      assignmentsModal.value.$el.dismiss()
-    }
-  },
-  // アカウント情報モーダル
-  accountModal: {
-    dismiss() {
-      accountModal.value.$el.dismiss()
-    }
-  },
-  // 時間割表モーダル
-  timetableModal: {
-    dismiss() {
-      timetableModal.value.$el.dismiss()
-    }
-  },
+    // 初期設定済みかどうか
+    isInited: false,
+    // 初期設定済み情報が読み込み済みかどうか
+    isLoaded: false
 })
 
-onMounted(() => {
-  presentingElement.value = page.value.$el
-})
+const checkInited = async () => {
+    // 取得
+    const result = await db.kvs.get("isInited")
+    if(!!result){
+        // 記録がある場合は、それに応じて設定
+        state.isInited = <boolean>result.value
+    } else {
+        state.isInited = false
+    }
+    setTimeout(() => state.isLoaded = true, 500)
+}
+// 初期設定済みかどうかを定期的に取得する
+const isInitedInterval = setInterval(checkInited,2000)
+// 初回チェック
+checkInited()
+
+// ページを閉じるとき、インターバルを終了
+onUnmounted(() => clearInterval(isInitedInterval))
 </script>

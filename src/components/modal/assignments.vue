@@ -13,7 +13,9 @@
   <ion-content color="light">
     <div class="ion-padding">
       <IonSegment>
-        <IonSegmentButton>1 件の未完了</IonSegmentButton>
+        <IonSegmentButton>
+          <IonText color="danger"><strong>1 件の未完了</strong></IonText>
+        </IonSegmentButton>
         <IonSegmentButton>0 件の完了済み</IonSegmentButton>
       </IonSegment>
     </div>
