@@ -15,7 +15,7 @@
             <IonGrid fixed>
                 <!--授業情報があるとき-->
                 <div v-if="false">
-                    <ClassData></ClassData>
+                    <!--<ClassData></ClassData>-->
                 </div>
                 <!--授業情報がないとき-->
                 <div class="ion-padding ion-margin-top ion-text-center" v-else>

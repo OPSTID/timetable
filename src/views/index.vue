@@ -14,6 +14,15 @@
                             <p style="color:#fafafa;opacity:0.6">Made by OPSTID</p>
                         </IonLabel>
                     </IonListHeader>
+                    <IonList inset>
+                        <IonItem>
+                            <IonIcon :icon="alertCircle" slot="start" color="warning"></IonIcon>
+                            <IonLabel class="ion-text-wrap">
+                                <strong>現在ベータ版を提供しています</strong>
+                                <p>一部、実装されていない機能があり、反応しないボタン等があります。また、このページで紹介している機能が廃止されたり、新しい機能が実装されるなどの変更を行う可能性がありますので、あらかじめご了承ください。新学期開始後、約1ヶ月後までを目処にに正式リリースを行う予定です。</p>
+                            </IonLabel>
+                        </IonItem>
+                    </IonList>
                     <!--パソコン・タブレット用-->
                     <div class="ion-padding ion-hide-md-down" style="display:flex;align-items:center">
                         <IonLabel style="color:white;opacity:0.9;flex:2" class="ion-padding">
@@ -216,7 +225,7 @@
 </style>
 <script setup lang="ts">
 import { IonButton, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonSpinner, IonText, IonThumbnail } from '@ionic/vue';
-import { checkmarkCircle, chevronDown, chevronForward, documents, documentsOutline, happyOutline, laptopOutline, logInOutline, logoTwitter, rocketOutline, school, star, syncCircle } from 'ionicons/icons';
+import { checkmarkCircle, chevronDown, alertCircle, chevronForward, documents, documentsOutline, happyOutline, laptopOutline, logInOutline, logoTwitter, rocketOutline, school, star, syncCircle } from 'ionicons/icons';
 import { onMounted, onUnmounted, reactive } from 'vue';
 
 import { db } from '@/db';

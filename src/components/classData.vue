@@ -119,13 +119,14 @@
 
     <!--編集モーダル-->
     <IonModal ref="editModal" :presenting-element="props.presentingElement" :backdrop-dismiss="false"
-        :can-dismiss="(data: any, role: string) => role !== 'gesture'" @did-present="editModalState.onDidPresent" @did-dismiss="editModalState.onDidDismiss">
+        :can-dismiss="(data: any, role: string) => role !== 'gesture'" @did-present="editModalState.onDidPresent"
+        @did-dismiss="editModalState.onDidDismiss">
         <IonHeader>
             <IonToolbar>
                 <IonButtons slot="start">
                     <IonButton @click="editModalState.cancel()">キャンセル</IonButton>
                 </IonButtons>
-                <IonTitle>科目を編集</IonTitle>
+                <IonTitle>編集</IonTitle>
                 <IonButtons slot="end">
                     <IonButton @click="editModalState.save"><strong>保存</strong></IonButton>
                 </IonButtons>
@@ -249,7 +250,6 @@ import { addCircle, reloadCircle, qrCodeOutline, attachOutline, informationCircl
 import { api, db } from '@/db'
 import { reactive, ref } from 'vue';
 import linkItem from './linkItem.vue';
-import { Method } from 'ionicons/dist/types/stencil-public-runtime';
 
 const editModal = ref()
 
@@ -299,17 +299,17 @@ const editModalState = reactive({
         links: <link[]>[]
     },
     // 編集モーダル表示中にWebページが閉じられそうになったら抑止する
-    onBeforeUnload(e:Event){
+    onBeforeUnload(e: Event) {
         e.preventDefault()
         return "授業情報を編集中です。このページから移動すると編集内容が破棄されます"
     },
     // 表示されたとき
-    onDidPresent(){
+    onDidPresent() {
         window.addEventListener("beforeunload", editModalState.onBeforeUnload)
         //console.log("present")
     },
     // 閉じられたとき
-    onDidDismiss(){
+    onDidDismiss() {
         window.removeEventListener("beforeunload", editModalState.onBeforeUnload)
         //console.log("dismiss")
     },
@@ -540,17 +540,24 @@ const loadClassData = async () => {
         if (
             (0 <= props.day && props.day <= 6) &&
             (1 <= props.period && props.period <= 10)) {
-            // 曜日, 時限を指定して取得
-            await db.classes.where("day")
-                .equals(props.day)
-                .toArray(_result => {
-                    if (!!_result) {
-                        // 時限が一致しているものを抽出
-                        result = (_result.filter(classData => {
-                            return classData.period === props.period
-                        }))[0]
-                    }
-                })
+            // 現在の時間割のIDを取得
+            const currentTimetableIdResult = await db.kvs.get("currentTimetableId")
+            if (!!currentTimetableIdResult) {
+                const currentTimetableId = <number>currentTimetableIdResult.value
+                // 現在の時間割の授業を取得
+                await db.classes.where("timetableId")
+                    .equals(currentTimetableId)
+                    .toArray(_result => {
+                        if (!!_result) {
+                            // 曜日、時限が一致しているものを抽出
+                            result = (_result.filter(classData => {
+                                return classData.day === props.day && classData.period === props.period
+                            }))[0]
+                        }
+                    })
+            } else {
+                state.isError = true
+            }
         } else {
             state.isError = true
         }

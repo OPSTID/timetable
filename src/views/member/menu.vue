@@ -66,7 +66,7 @@
           </IonItem>
           <IonItem>
             <IonLabel>バージョン</IonLabel>
-            <IonLabel slot="end">20240219.0</IonLabel>
+            <IonLabel slot="end">20240320.0 (beta)</IonLabel>
           </IonItem>
           <IonItem button router-link="/info/release-notes">
             <IonLabel>

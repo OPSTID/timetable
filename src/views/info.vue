@@ -8,11 +8,8 @@
                     <IonBackButton v-else default-href="/" text="戻る"></IonBackButton>
                 </IonButtons>
                 <IonButtons slot="end">
-                    <IonButton @click="loadMarkdown" v-if="!state.isLoading || !!state.isError">
+                    <IonButton @click="loadMarkdown" :disabled="state.isLoading">
                         <IonIcon :icon="reload" slot="icon-only"></IonIcon>
-                    </IonButton>
-                    <IonButton v-else disabled>
-                        <IonSpinner color="dark"></IonSpinner>
                     </IonButton>
                 </IonButtons>
             </IonToolbar>
@@ -29,7 +26,7 @@
                 </IonList>
                 <!--読み込み-->
                 <div v-else-if="state.isLoading" class="ion-text-center ion-padding-top ion-margin-top">
-                    <IonSpinner name="dots" style="width:2em;height:2em;"></IonSpinner>
+                    <IonSpinner style="width:2em;height:2em;" />
                 </div>
                 <IonList inset v-else v-for="markdownHTML in state.markdownHTMLs">
                     <IonItem>
@@ -42,7 +39,7 @@
     </IonPage>
 </template>
 <script setup lang="ts">
-import { IonBackButton, IonButton, IonButtons, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonPage, IonRefresher, IonRefresherContent, IonSpinner, IonTitle, IonToolbar, alertController } from '@ionic/vue';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonPage, IonRefresher, IonRefresherContent, IonSkeletonText, IonSpinner, IonTitle, IonToolbar, alertController } from '@ionic/vue';
 import { reload } from 'ionicons/icons';
 
 import { marked } from 'marked';
@@ -96,11 +93,19 @@ const loadMarkdown = async () => {
 
     // mime-typeを確認
     const mime = res.headers.get("content-type")
-    // console.log(mime)
+    console.log(mime)
     // mime-type が text/markdown なら変換して表示
-    if (mime === "text/markdown") {
+    if (mime === "text/markdown" || mime === null) {
         // marked.js で変換後、dompurifyでHTMLを安全な形にする
-        const markdownHTML = DOMPurify.sanitize(await marked(mdText, {breaks: true}), { ADD_ATTR: ['target'] })
+        let markdownHTML = DOMPurify.sanitize(await marked(mdText, { breaks: true }), { ADD_ATTR: ['target'] })
+        // 一旦DOMとして読み込む
+        const markdownDOM = new DOMParser().parseFromString(markdownHTML, "text/html")
+        markdownDOM.querySelectorAll("a").forEach(el => {
+            // 全ての <a> タグに、target="_blank" を設定する
+            el.setAttribute("target", "_blank")
+        })
+        // HTMLに戻す
+        markdownHTML = markdownDOM.documentElement.outerHTML
         // <hr> で区切る
         state.markdownHTMLs = markdownHTML.split("<hr>")
 

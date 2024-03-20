@@ -48,11 +48,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/member/change-timetable',
     component: () => import("@/views/member/change-timetable.vue")
   },
-  // 授業詳細
-  {
-    path: '/member/classes/:classId',
-    component: () => import("@/views/member/classDetail.vue")
-  },
   // 時限詳細
   {
     path: '/member/period/:day/:period',
@@ -80,11 +75,6 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/info/:markdownName',
     component: () => import("@/views/info.vue")
-  },
-  // オープンソースライセンス
-  {
-    path: '/open-source-license',
-    component: () => import("@/views/open-source-license.vue")
   },
   // 開発者ツール
   {
