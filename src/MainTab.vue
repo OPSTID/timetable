@@ -7,10 +7,9 @@
                     <IonIcon :icon="home"></IonIcon>
                     <IonLabel>Home</IonLabel>
                 </IonTabButton>
-                <IonTabButton tab="/member/to-do" href="/member/to-do" @click="onTabButtonClick('to-do')">
-                    <IonIcon :icon="documentsOutline"></IonIcon>
-                    <IonLabel>To-do</IonLabel>
-                    <IonBadge color="danger">1</IonBadge>
+                <IonTabButton tab="/member/memo" href="/member/memo" @click="onTabButtonClick('to-do')">
+                    <IonIcon :icon="documentTextOutline"></IonIcon>
+                    <IonLabel>Memo</IonLabel>
                 </IonTabButton>
                 <IonTabButton tab="/member/menu" href="/member/menu" @click="onTabButtonClick('menu')">
                     <IonIcon :icon="menu"></IonIcon>
@@ -22,7 +21,7 @@
 </template>
 <script setup lang="ts">
 import { IonBadge, IonIcon, IonLabel, IonPage, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/vue';
-import { documentsOutline, grid, home, menu } from 'ionicons/icons';
+import { documentTextOutline, documentsOutline, grid, home, menu } from 'ionicons/icons';
 
 // タブの各ボタンをクリックしたとき
 // name: 各ページの<ion-content>に設定したclassと同じにする

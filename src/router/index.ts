@@ -24,8 +24,8 @@ const routes: Array<RouteRecordRaw> = [
       },
       // To-do
       {
-        path: '/member/to-do',
-        component: () => import("@/views/member/to-do.vue")
+        path: '/member/memo',
+        component: () => import("@/views/member/memo.vue")
       },
       // メニュー
       {
@@ -38,11 +38,6 @@ const routes: Array<RouteRecordRaw> = [
   // サブページ
   /* 初期登録済み専用ページ*/
 
-  // To-do を作成
-  {
-    path: '/member/to-do/create',
-    component: () => import("@/views/member/to-do_create.vue")
-  },
   // 時間割を選択
   {
     path: '/member/change-timetable',
@@ -80,6 +75,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/dev-tools',
     component: () => import("@/views/developer-tools.vue")
+  },
+
+  // Not found
+  {
+    path:"/:pathMatch(.*)*",
+    component: () => import("@/views/notfound.vue")
   }
 ]
 

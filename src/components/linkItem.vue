@@ -44,7 +44,7 @@ const openUrl = async () => {
     // クリック可能でないときは無視
     if(!props.clickable) return;
     // Zoom
-    if(props.url.match(meetingsRegExp.zoom)){
+    /*if(props.url.match(meetingsRegExp.zoom)){
         // PMIをURLから取り出す
         const pmiMatch = new URL(props.url).pathname.match(/\/j\/(.*)/)
         if(!!pmiMatch){
@@ -81,7 +81,7 @@ const openUrl = async () => {
             })
             alert.present()
         }
-    }
+    }*/
     // 他のミーティングアプリの場合は、特に動作を定義しない
     // URLを開く
     else {

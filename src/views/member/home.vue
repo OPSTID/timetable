@@ -36,10 +36,13 @@
               Now
               <!--点滅するドット（次の授業までの時間で色分け）-->
               <span v-if="state.currentClass.isLoaded">
+                <!--次の授業まで、10分以上のとき-->
                 <div class="now-dot" v-if="!state.currentClass.isNow || state.currentClass.startIn > 10"
                   style="background-color:var(--ion-color-primary)"></div>
+                <!--次の授業まで10分以下のとき-->
                 <div class="now-dot" v-else-if="state.currentClass.startIn > 0"
                   style="background-color:var(--ion-color-warning)"></div>
+                <!--授業中など-->
                 <div class="now-dot" v-else></div>
               </span>
 
@@ -73,7 +76,7 @@
               <IonItem>
                 <IonLabel class="ion-text-wrap">
                   <h2><strong>授業を登録して使ってみよう</strong></h2>
-                  <p>{{ state.nickname }}さん、Timetable アプリをご利用いただきありがとうございます！<br>下の「曜日別の時間割」で、<IonText color="primary"><strong>授業のある曜日</strong></IonText>を選んで、<IonText color="primary"><strong>時限をタップ</strong></IonText>すると授業を登録できます👇️</p>
+                  <p>{{ state.nickname }}さん、Timetable アプリをご利用いただきありがとうございます！<br>下の「曜日別の時間割」で、<IonText color="primary"><strong>授業のある曜日</strong></IonText>を選んで、<IonText color="primary"><strong>時限をタップ</strong></IonText>すると授業を登録できます↓</p>
                 </IonLabel>
               </IonItem>
             </IonList>
@@ -116,17 +119,15 @@
                 <p class="ion-text-wrap">{{ state.nickname }}さん、今日の授業はすべて終了しました👍️</p>
               </IonLabel>
             </IonItem>
-            <!--To-doの情報を表示-->
-            <IonItem button router-link="/member/to-do">
-              <IonIcon :icon="documentsOutline" slot="start"></IonIcon>
+            <!--Memo へのリンク-->
+            <IonItem button router-link="/member/memo">
+              <IonIcon :icon="documentTextOutline" slot="start"></IonIcon>
               <IonLabel>
-                <strong>To-do</strong>
+                <strong>Memo</strong>
                 <p>
-                  <IonText color="medium" class="ion-text-wrap">未完了の To-do があります</IonText>
+                  <IonText color="medium" class="ion-text-wrap">Memo を使って、課題などを管理しよう</IonText>
                 </p>
               </IonLabel>
-              <IonBadge color="danger" slot="end" v-if="true">1</IonBadge>
-              <IonIcon :icon="checkmarkCircle" slot="end" color="success" v-else></IonIcon>
             </IonItem>
           </IonList>
         </div>
@@ -245,7 +246,7 @@ import Assignments from '@/components/modal/assignments.vue';
 import TimetableModal from '@/components/modal/timetable-modal.vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonLabel, IonSegment, IonSegmentButton, IonList, IonItem, IonText, IonListHeader, IonButton, IonIcon, IonBadge, IonModal, IonButtons, IonCol, IonRow, loadingController, toastController, IonRefresher, IonRefresherContent, IonPopover, IonActionSheet, IonSpinner, IonSkeletonText, IonChip } from '@ionic/vue';
 import { useHead } from "@unhead/vue"
-import { addCircle, albumsOutline, alertCircle, arrowDown, calendar, calendarOutline, caretDown, checkmarkCircle, chevronDown, chevronForward, cogOutline, documents, documentsOutline, eyeOff, hourglass, hourglassOutline, linkOutline, menu, personCircleOutline, personOutline, reload, reloadCircle, rocket, shareOutline, tabletLandscape, time, videocam } from 'ionicons/icons';
+import { addCircle, albumsOutline, alertCircle, arrowDown, calendar, calendarOutline, caretDown, checkmarkCircle, chevronDown, chevronForward, cogOutline, documentTextOutline, documents, documentsOutline, eyeOff, hourglass, hourglassOutline, linkOutline, menu, personCircleOutline, personOutline, reload, reloadCircle, rocket, shareOutline, tabletLandscape, time, videocam } from 'ionicons/icons';
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { routerKey, useRouter } from 'vue-router';
 

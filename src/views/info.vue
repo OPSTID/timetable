@@ -66,6 +66,18 @@ const closeWindow = () => {
     window.close()
 }
 
+// marked.js の設定
+// ヘッダーに<strong>を付与
+const renderer = {
+    heading(text:string, level:number){
+        return `<h${level}><strong>${text}</strong></h${level}>`
+    },
+    link(href:string, title: any, text: string){
+        return `<a href=${href} target="_blank">${text}</a>`   
+    }
+}
+marked.use({renderer})
+
 // マークダウンをサーバーから取得して表示
 const loadMarkdown = async () => {
     state.isLoading = true
@@ -97,15 +109,8 @@ const loadMarkdown = async () => {
     // mime-type が text/markdown なら変換して表示
     if (mime === "text/markdown" || mime === null) {
         // marked.js で変換後、dompurifyでHTMLを安全な形にする
-        let markdownHTML = DOMPurify.sanitize(await marked(mdText, { breaks: true }), { ADD_ATTR: ['target'] })
-        // 一旦DOMとして読み込む
-        const markdownDOM = new DOMParser().parseFromString(markdownHTML, "text/html")
-        markdownDOM.querySelectorAll("a").forEach(el => {
-            // 全ての <a> タグに、target="_blank" を設定する
-            el.setAttribute("target", "_blank")
-        })
-        // HTMLに戻す
-        markdownHTML = markdownDOM.documentElement.outerHTML
+        let markdownHTML = DOMPurify.sanitize(await marked.parse(mdText, { breaks: true }), { ADD_ATTR: ['target'] })
+        
         // <hr> で区切る
         state.markdownHTMLs = markdownHTML.split("<hr>")
 
