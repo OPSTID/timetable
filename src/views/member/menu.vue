@@ -7,12 +7,14 @@
     </IonHeader>
     <IonContent color="light" class="menu" fullscreen>
       <IonGrid fixed>
-        <IonList inset lines="full">
+        <IonList inset>
           <IonItem>
             <IonLabel class="ion-text-center">
-              <h2><IonIcon :icon="personCircle" size="large"></IonIcon></h2>
+              <h2>
+                <IonIcon :icon="personCircle" size="large"></IonIcon>
+              </h2>
               <h1><strong class="timetable-gradient-text" style="font-weight:900">{{ state.nickname
-              }}</strong></h1>
+                  }}</strong></h1>
               <p><a href="javascript:void(0)" @click="changeNickname" style="font-size:0.9em;">ニックネームを変更</a>
               </p>
               <p>
@@ -21,12 +23,16 @@
               </p>
             </IonLabel>
           </IonItem>
+        </IonList>
+        <IonList inset>
           <IonItem button router-link="/member/change-timetable">
             <IonIcon :icon="albumsOutline" slot="start"></IonIcon>
             <IonLabel>
               時間割の選択
               <p v-if="state.currentTimetableName">{{ state.currentTimetableName }}</p>
-              <p v-else><IonSpinner name="dots" style="width:1em;height:1em;"></IonSpinner></p>
+              <p v-else>
+                <IonSpinner name="dots" style="width:1em;height:1em;"></IonSpinner>
+              </p>
             </IonLabel>
           </IonItem>
           <IonItem button router-link="/app-qrcode">
@@ -60,7 +66,7 @@
           </IonItem>
           <IonItem>
             <IonLabel>バージョン</IonLabel>
-            <IonLabel slot="end">20240324.0 (beta)</IonLabel>
+            <IonLabel slot="end">20240326.0 (beta)</IonLabel>
           </IonItem>
           <IonItem button router-link="/info/release-notes">
             <IonLabel>
@@ -193,7 +199,7 @@ setInterval(() => {
       state.isDevToolsEnabled = <boolean>result.value
     }
   })
-},1000)
+}, 1000)
 
 const updateUserInfo = async () => {
   // ニックネームを取得
@@ -220,10 +226,10 @@ updateUserInfo()
 const getCurrentTimetableName = async () => {
   // 現在の時間割のIDを取得
   const result = await db.kvs.get("currentTimetableId")
-  if(!!result){
+  if (!!result) {
     // 取得したIDで時間割を検索
     const timetableResult = await db.timetables.get(<number>result.value)
-    if(!!timetableResult){
+    if (!!timetableResult) {
       // 名前を反映
       state.currentTimetableName = timetableResult.name
     }
