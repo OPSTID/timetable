@@ -46,7 +46,7 @@
                 <div class="now-dot" v-else></div>
               </span>
 
-              <p>授業情報・課題などを確認しよう</p>
+              <p>授業情報を確認しよう</p>
             </IonLabel>
             <IonButton size="small" class="ion-margin-bottom" v-if="state.isActiveNow"
               @click="state.isActiveNow = false">

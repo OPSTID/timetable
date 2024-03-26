@@ -21,12 +21,6 @@
               </p>
             </IonLabel>
           </IonItem>
-        </IonList>
-        <IonList inset>
-          <!--<IonItem button router-link="/member/settings">
-            <IonIcon :icon="cogOutline" slot="start"></IonIcon>
-            設定
-          </IonItem>-->
           <IonItem button router-link="/member/change-timetable">
             <IonIcon :icon="albumsOutline" slot="start"></IonIcon>
             <IonLabel>
@@ -97,7 +91,7 @@
               <IonText color="primary">オープンソースライセンス</IonText>
             </IonLabel>
           </IonItem>
-          <IonItem button href="/">
+          <IonItem button href="/lp">
             <IonLabel>
               <IonText color="primary">ホームページを開く</IonText>
             </IonLabel>

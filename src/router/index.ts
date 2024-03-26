@@ -55,7 +55,11 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   /* 初期登録済み専用ページ終了 */
-
+  // LPページ
+  {
+    path: "/lp",
+    component: () => import("@/views/lp.vue")
+  },
   // 初期登録ページ
   {
     path: '/start',
