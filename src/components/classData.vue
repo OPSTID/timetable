@@ -51,12 +51,28 @@
                 </IonLabel>
             </IonItem>
             <IonItem button>
-                <IonIcon :icon="reloadCircle" slot="start" color="primary"></IonIcon>
-                <IonText color="primary">すでに作成済みの授業を登録</IonText>
+                <IonIcon :icon="copyOutline" slot="start" color="primary"></IonIcon>
+                <IonLabel class="ion-text-wrap">
+                    <IonText color="primary">すでに作成済みの授業をコピー</IonText>
+                    <p>次回アップデートで実装予定</p>
+                </IonLabel>
+                <IonBadge slot="end" color="danger">現在利用不可</IonBadge>
             </IonItem>
-            <IonItem button>
+            <IonItem button @click="launchQrReader">
                 <IonIcon :icon="qrCodeOutline" slot="start" color="primary"></IonIcon>
-                <IonText color="primary">QRコードを読み取る</IonText>
+                <IonLabel class="ion-text-wrap">
+                    <IonText color="primary">QRコードを読み込む</IonText>
+                    <p>他の端末で作成した授業情報をQRコードを読み取ることでコピーできます</p>
+                </IonLabel>
+            </IonItem>
+            
+        </IonList>
+        <IonList inset>
+            <IonItem @click="loadClassData" button>
+                <IonLabel class="ion-text-wrap">
+                    <IonText color="primary">再読み込み</IonText>
+                    <p>QRコードで授業を登録したのに表示されない場合はここをタップ</p>
+                </IonLabel>
             </IonItem>
         </IonList>
     </div>
@@ -84,7 +100,7 @@
                 </IonLabel>
                 <IonButtons slot="end">
                     <IonButton fill="solid" shape="round" color="dark" @click="editModal.$el.present()">
-                        <span class="ion-margin-start ion-margin-end">この授業を編集</span>
+                        <span class="ion-margin-start ion-margin-end">編集・削除</span>
                     </IonButton>
                 </IonButtons>
             </IonItem>
@@ -115,6 +131,16 @@
                 </IonLabel>
             </IonItem>
         </IonList>
+        <!--QRコードへのリンク-->
+        <IonList inset v-if="props.day !== undefined && props.period !== undefined">
+            <IonItem button :router-link="`/member/period/${day}/${period}/qrcode`">
+                <IonIcon :icon="qrCodeOutline" slot="start"></IonIcon>
+                <IonLabel class="ion-text-wrap">
+                    <strong>QRコードを表示</strong>
+                    <p>QRコードで他の端末にこの授業を転送しよう。</p>
+                </IonLabel>
+            </IonItem>
+        </IonList>
     </div>
 
     <!--編集モーダル-->
@@ -133,6 +159,15 @@
             </IonToolbar>
         </IonHeader>
         <IonContent color="light">
+            <!--パソコン入力推奨メッセージ-->
+            <IonList inset v-if="state.userOSName === 'Android' || state.userOSName === 'iOS'">
+                <IonItem color="dark" @click="state.userOSName = ''">
+                    <IonLabel class="ion-text-wrap">
+                        <strong>⚠️パソコンでもご利用ですか？</strong>
+                        <h3>パソコンでもTimetable アプリをご利用いただいている場合は、パソコンで授業情報を入力するとQRコードでスマホに授業を転送できて便利です！（逆はできません）</h3>
+                    </IonLabel>
+                </IonItem>
+            </IonList>
             <IonList inset>
                 <IonItem>
                     <IonLabel>
@@ -221,7 +256,7 @@
                     <IonItem v-if="editModalState.classData.links.length === 0">
                         <IonLabel>
                             <strong>リンクやミーティングを追加しよう</strong>
-                            <p class="ion-text-wrap">URLを登録するだけ。Zoom など、一部の対応しているアプリの場合は、本アプリから直接起動できて便利です。</p>
+                            <p class="ion-text-wrap">URLを登録するだけ。Zoom などのオンラインミーティングのURLも登録できます。</p>
                         </IonLabel>
                     </IonItem>
                 </IonList>
@@ -244,13 +279,17 @@
 </template>
 
 <script setup lang="ts">
-import { IonBadge, IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonListHeader, IonModal, IonSkeletonText, IonSpinner, IonText, IonTitle, IonToolbar, alertController, toastController } from '@ionic/vue';
-import { addCircle, reloadCircle, qrCodeOutline, attachOutline, informationCircle, linkOutline, locateOutline, person, school, timeOutline, trash, videocam } from 'ionicons/icons';
+import { IonBadge, IonButton, IonButtons, IonChip, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonListHeader, IonModal, IonSkeletonText, IonSpinner, IonText, IonTitle, IonToolbar, alertController, toastController } from '@ionic/vue';
+import { addCircle, reloadCircle, qrCodeOutline, attachOutline, informationCircle, linkOutline, locateOutline, person, school, timeOutline, trash, videocam, qrCode, copyOutline } from 'ionicons/icons';
+
+import { UAParser } from "ua-parser-js"
 
 import { api, db } from '@/db'
 import { reactive, ref } from 'vue';
+import { useRouter } from "vue-router";
 import linkItem from './linkItem.vue';
 
+const router = useRouter()
 const editModal = ref()
 
 const props = defineProps<{
@@ -274,6 +313,8 @@ const state = reactive({
     isFound: false,
     // 授業に読み込み時にエラーが発生したかどうか
     isError: false,
+    // 端末OSの名称
+    userOSName: (new UAParser()).getOS().name,
     // 授業情報
     classData: {
         id: <null | number>null,
@@ -448,7 +489,7 @@ const editModalState = reactive({
     async openCreateLinkAlert() {
         const alert = await alertController.create({
             header: "リンクの追加",
-            message: "リンクのタイトルとURLを入力してください。Zoom などの対応しているアプリのURLを追加すると、本アプリから直接起動することが可能です。",
+            message: "リンクのタイトルとURLを入力してください。Zoom などのオンラインミーティングのURLを登録すると、ワンストップで参加できて便利です。",
             inputs: [
                 {
                     placeholder: "タイトル(例:講義資料)"
@@ -592,6 +633,25 @@ const loadClassData = async () => {
 
 // 読み込みを実行
 loadClassData()
+
+// QRコードリーダを起動
+const launchQrReader = async () => {
+    const alert = await alertController.create({
+        header: "お知らせ",
+        message: "次の画面でカメラへのアクセス許可を求められた場合は、「許可」をお願いします。",
+        buttons:[
+            'キャンセル',
+            {
+                text: '次に進む',
+                handler(){
+                    router.push("/member/qr-reader")
+                }
+            }
+        ]
+    })
+
+    alert.present()
+}
 </script>
 <style scoped>
 input[type="time"] {

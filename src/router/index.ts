@@ -48,6 +48,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/member/period/:day/:period',
     component: () => import("@/views/member/periodDetail.vue")
   },
+  // 時限のQRコード
+  {
+    path: '/member/period/:day/:period/qrcode',
+    component: () => import("@/views/member/periodQRCode.vue")
+  },
+  // QRリーダー
+  {
+    path: "/member/qr-reader",
+    component: () => import("@/views/member/qr-reader.vue")
+  },
   // 設定
   {
     path: '/member/settings',

@@ -66,17 +66,21 @@
                     <IonItem>
                         <IonLabel>
                             <h3 class="ion-text-wrap">
-                                以下のリンクから、利用規約・プライバシーポリシーをご確認の上、同意をお願いいたします。<br>同意いただけない場合は本アプリをご利用いただけませんのでこの画面を閉じてください。
+                                以下のリンクから、利用規約・プライバシーポリシーをご確認の上、同意をお願いいたします。<br>リンクをクリックしてご確認いただくことで、下記「同意する」がタップできるようになります。
                             </h3>
                         </IonLabel>
                     </IonItem>
-                    <IonItem href="/info/terms?closebutton=1" target="_blank">
+                    <IonItem href="/info/terms?closebutton=1" target="_blank" @click="state.isTermsLinkClicked = true">
                         <IonText color="primary"><strong>利用規約・プライバシーポリシーを確認する</strong></IonText>
                     </IonItem>
                 </IonList>
                 <IonList inset>
-                    <IonItem>
-                        <IonCheckbox v-model="state.isAgreeTerms" label-placement="end" justify="start">同意する
+                    <IonItem :disabled="!state.isTermsLinkClicked">
+                        <IonCheckbox v-model="state.isAgreeTerms" label-placement="end" justify="start">
+                            <IonLabel class="ion-text-wrap">
+                                <h2>同意する</h2>
+                                <p v-if="!state.isTermsLinkClicked">上記リンクをタップして、利用規約・プライバシーポリシーをご確認ください</p>
+                            </IonLabel>
                         </IonCheckbox>
                         <IonIcon :icon="checkmarkCircle" color="success" slot="end" v-if="!!state.isAgreeTerms">
                         </IonIcon>
@@ -89,8 +93,8 @@
                         <IonLabel>
                             <h3 class="ion-text-wrap">
                                 <ul>
-                                    <li>利用規約・プライバシーポリシーにも記載しておりますが、本サービスはあなたの責任の下にご利用ください。</li>
-                                    <li>現在のところサーバーへのデータ保持が必要なアカウント機能・複数端末での同期機能は実装しておらず、ブラウザ内に用意されている保存領域にすべての情報を保存します。複数端末でご利用の場合、それぞれの端末で授業登録が必要となりますことをあらかじめご了承ください。</li>
+                                    <li>利用規約にも記載しておりますが、本サービスはあなたの責任の下にご利用ください。</li>
+                                    <li>PCとスマホの組み合わせでご利用頂く場合、PCで授業情報を入力するとQRコードでスマホに授業情報を転送できますが、逆（スマホ→PC）はできません。</li>
                                     <li>本アプリでは、全てのデータを現在使用中のブラウザにある保存領域に保存します。<IonText
                                             color="danger">
                                             ブラウザの設定などから閲覧履歴の削除等を行うと、<strong>本アプリが初期化</strong>されることがあります</IonText>
@@ -138,6 +142,7 @@ const router = useRouter()
 const state = reactive({
     nickname: "",
     timetable: 0, // 学年・学期＝使用する時間割の選択
+    isTermsLinkClicked: false, // 利用規約へのリンクをクリックしたかどうか
     isAgreeTerms: false, // 利用規約への同意
     isAgreeStatement: false // 重要事項への同意
 })

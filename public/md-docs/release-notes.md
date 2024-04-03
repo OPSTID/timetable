@@ -1,6 +1,11 @@
 ## **<span class="timetable-gradient-text" style="font-weight:900">OPSTID Timetable</span>**
 ### **リリースノート**
-2024/03/26 更新
+2024/04/03 更新
+
+---
+### v.20240403.0 (beta)
+QRコードで授業を転送する機能を実装しました。
+その他、不具合等を修正しました。
 
 ---
 ### v.20240326.0 (beta)

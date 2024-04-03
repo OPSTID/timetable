@@ -76,7 +76,9 @@
               <IonItem>
                 <IonLabel class="ion-text-wrap">
                   <h2><strong>授業を登録して使ってみよう</strong></h2>
-                  <p>{{ state.nickname }}さん、Timetable アプリをご利用いただきありがとうございます！<br>下の「曜日別の時間割」で、<IonText color="primary"><strong>授業のある曜日</strong></IonText>を選んで、<IonText color="primary"><strong>時限をタップ</strong></IonText>すると授業を登録できます↓</p>
+                  <p>{{ state.nickname }}さん、Timetable アプリをご利用いただきありがとうございます！<br>下の「曜日別の時間割」で、<IonText color="primary">
+                      <strong>授業のある曜日</strong></IonText>を選んで、<IonText color="primary"><strong>時限をタップ</strong></IonText>
+                    すると授業を登録できます↓</p>
                 </IonLabel>
               </IonItem>
             </IonList>
@@ -98,10 +100,11 @@
                     }}-{{ state.currentClass.classData?.endTime }}</span>
                 </p>
                 <h1><strong>{{ state.currentClass.classData?.name }}</strong></h1>
-                <p>{{ state.currentClass.classData?.room }}
+                <p>
+                  <span>{{ state.currentClass.classData?.room }}</span>
                   <!--教室・講師がどちらも指定されているときだけ、区切りとして中点を表示-->
                   <span v-if="!!state.currentClass.classData?.room && !!state.currentClass.classData?.teacher">・</span>
-                  {{ state.currentClass.classData?.teacher }}
+                  <span>{{ state.currentClass.classData?.teacher }}</span>
                 </p>
               </IonLabel>
             </IonItem>
@@ -147,27 +150,27 @@
         </div>
 
         <!--曜日別の時間割-->
+        <IonListHeader>
+          <IonLabel style="margin-top:10px">
+            曜日別の時間割
+            <p>{{ state.timetableName }} <router-link to="/member/change-timetable">変更</router-link>
+            </p>
+          </IonLabel>
+          <IonButton size="small" :fill="state.todayDay === state.selectedDay ? 'solid' : 'outline'"
+            @click="state.selectedDay = state.todayDay" class="ion-margin-bottom">
+            今日
+          </IonButton>
+          <IonButton size="small" class="ion-margin-bottom" id="open-timetable-modal">
+            <IonIcon :icon="calendar" slot="start"></IonIcon>
+            時間割表
+          </IonButton>
+          <!--時間割表モーダル-->
+          <IonModal ref="timetableModal" trigger="open-timetable-modal" :presenting-element="presentingElement">
+            <TimetableModal :dismiss="modalState.timetableModal.dismiss"></TimetableModal>
+          </IonModal>
+        </IonListHeader>
         <div class="timetable-header">
-          <IonListHeader class="ion-padding-bottom">
-            <IonLabel style="margin-top:10px;">
-              曜日別の時間割
-              <p>{{ state.timetableName }} <router-link to="/member/change-timetable">変更</router-link>
-              </p>
-            </IonLabel>
-            <IonButton size="small" :fill="state.todayDay === state.selectedDay ? 'solid' : 'outline'"
-              @click="state.selectedDay = state.todayDay" class="ion-margin-bottom">
-              今日
-            </IonButton>
-            <IonButton size="small" class="ion-margin-bottom" id="open-timetable-modal">
-              <IonIcon :icon="calendar" slot="start"></IonIcon>
-              時間割表
-            </IonButton>
-            <!--時間割表モーダル-->
-            <IonModal ref="timetableModal" trigger="open-timetable-modal" :presenting-element="presentingElement">
-              <TimetableModal :dismiss="modalState.timetableModal.dismiss"></TimetableModal>
-            </IonModal>
-          </IonListHeader>
-
+          <div class="ion-padding-top"></div>
           <!--曜日の選択-->
           <IonSegment scrollable v-model="state.selectedDay">
             <IonSegmentButton :value="0">日</IonSegmentButton>
