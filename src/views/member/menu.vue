@@ -66,7 +66,7 @@
           </IonItem>
           <IonItem>
             <IonLabel>バージョン</IonLabel>
-            <IonLabel slot="end">20240403.0 (beta)</IonLabel>
+            <IonLabel slot="end">20240404.0 (beta)</IonLabel>
           </IonItem>
           <IonItem button router-link="/info/release-notes">
             <IonLabel>
@@ -74,7 +74,7 @@
               <p>アップデートで変更した内容を確認できます</p>
             </IonLabel>
           </IonItem>
-          <IonItem href="https://x.com/opstid_dev" target="_blank">
+          <IonItem href="https://x.com/OPSTIDTimetable" target="_blank">
             <IonLabel>
               <IonText color="primary">X (旧 Twitter) アカウント</IonText>
               <p>お問い合わせもこちら</p>
@@ -109,7 +109,7 @@
               <p class="ion-text-wrap">本アプリケーションでは、LINEヤフー株式会社及び、Fontworks、Fontrix、LINE CREATIVE CENTERが制作した、<a
                   href="https://seed.line.me/index_jp.html" target="_blank"><strong>LINE Seed
                     JP</strong></a>
-                フォントを使用しています。</p>
+                フォントをOFLライセンスのもとに使用しています。</p>
             </IonLabel>
           </IonItem>
         </IonList>

@@ -488,6 +488,7 @@ const editModalState = reactive({
     // リンク作成
     async openCreateLinkAlert() {
         const alert = await alertController.create({
+            backdropDismiss: false,
             header: "リンクの追加",
             message: "リンクのタイトルとURLを入力してください。Zoom などのオンラインミーティングのURLを登録すると、ワンストップで参加できて便利です。",
             inputs: [

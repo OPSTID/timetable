@@ -24,12 +24,13 @@
 }
 
 /* Thin */
+/*
 @font-face {
     font-family: "LINE Seed JP";
     src: url("/font/LINESeedJP/WOFF/LINESeedJP_OTF_Th.woff") format("woff");
     src: url("/font/LINESeedJP/WOFF2/LINESeedJP_OTF_Th.woff2") format("woff2");
     font-weight: 200;
-}
+}*/
 
 :root {
     --ion-font-family: "LINE Seed JP", sans-serif;
