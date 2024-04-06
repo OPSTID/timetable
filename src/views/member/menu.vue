@@ -66,8 +66,20 @@
           </IonItem>
           <IonItem>
             <IonLabel>バージョン</IonLabel>
-            <IonLabel slot="end">20240404.0 (beta)</IonLabel>
+            <IonLabel slot="end">20240406.0 (beta)</IonLabel>
           </IonItem>
+          <IonItem>
+            <IonLabel>最終チェック日時</IonLabel>
+            <IonLabel slot="end">{{ state.lastUpdateCheckDate }}</IonLabel>
+          </IonItem>
+          <IonItem button @click="forceUpdate">
+            <IonLabel color="ion-text-wrap">
+              <IonText color="primary">強制アップデート</IonText>
+              <p>ブラウザに保存された、本アプリのキャッシュを削除して新しいバージョンをダウンロードします</p>
+            </IonLabel>
+          </IonItem>
+        </IonList>
+        <IonList inset lines="full">
           <IonItem button router-link="/info/release-notes">
             <IonLabel>
               <IonText color="primary">リリースノート</IonText>
@@ -127,10 +139,11 @@
 </template>
 <script setup lang="ts">
 import { IonAvatar, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonSpinner, IonText, IonThumbnail, IonTitle, IonToolbar, alertController, toastController } from '@ionic/vue';
-import { albumsOutline, calendarOutline, codeOutline, cogOutline, person, personCircle, shareOutline } from 'ionicons/icons';
+import { albumsOutline, alert, calendarOutline, codeOutline, cogOutline, person, personCircle, shareOutline } from 'ionicons/icons';
 import { onMounted, reactive } from 'vue';
 
 import { db } from '@/db';
+import autoUpdate from '@/lib/autoUpdate';
 
 const state = reactive({
   // ニックネーム
@@ -141,6 +154,9 @@ const state = reactive({
     month: 0,
     date: 0
   },
+
+  // 最終更新チェック日時
+  lastUpdateCheckDate:localStorage.getItem("timetable.opstid.com:lastUpdateDate") || "不明",
 
   // 現在の時間割の名前
   currentTimetableName: "",
@@ -282,6 +298,24 @@ const changeNickname = async () => {
           }
         }
       },
+    ]
+  })
+  alert.present()
+}
+
+// 強制アップデート
+const forceUpdate = async () => {
+  const alert = await alertController.create({
+    header: "強制アップデート",
+    message: "強制アップデートを実行しますか？Wi-Fi環境で行うことを推奨します。この操作で授業情報などのユーザーデータが削除されることはありません。",
+    buttons: [
+      {
+        text: 'アップデートを実行',
+        handler() {
+          autoUpdate(true)
+        }
+      },
+      'キャンセル',
     ]
   })
   alert.present()

@@ -30,6 +30,10 @@ import './theme/style.css';
 
 /* make toolbar responsive */
 import ionToolbarResponsive from './lib/ion-toolbar-responsive';
+import autoUpdate from './lib/autoUpdate';
+
+// キャッシュを更新
+autoUpdate()
 
 const app = createApp(App)
   .use(IonicVue, {

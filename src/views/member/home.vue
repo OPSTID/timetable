@@ -31,7 +31,7 @@
         </ion-header>
         <!--現在（今後）の授業などを表示するNow機能-->
         <div v-if="state.isActiveNow">
-          <IonListHeader>
+          <IonListHeader v-if="false">
             <IonLabel style="margin-top:0px;">
               Now
               <!--点滅するドット（次の授業までの時間で色分け）-->

@@ -15,20 +15,23 @@
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
 
-  <link rel="shortcut icon" type="image/png" href="/img/icon-one.svg" />
+  <link rel="shortcut icon" type="image/png" href="/img/icon-one.png" />
 
   <!-- add to homescreen for ios -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Ionic App" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Timetable" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="#f4f5f8" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
   <style>
     @keyframes jump {
       0% {
         transform: translateY(0px);
       }
+
       50% {
         transform: translateY(5px);
       }
+
       100% {
         transform: translateY(0px);
       }
@@ -57,7 +60,7 @@
       right: 0;
       margin: auto;
       max-width: 100%;
-      
+
 
       filter: grayscale(1);
       opacity: 0.5;
@@ -70,25 +73,54 @@
       filter: grayscale(0);
       opacity: 1;
       transform: scale(1.05) translateY(0px);
-      animation:none;
+      animation: none;
     }
 
     body {
       background: #f4f5f8;
     }
+
+    /*
     @media (prefers-color-scheme: dark) {
       body {
         background: #000;
       }
-    }
+    }*/
   </style>
   <script>
-    window.addEventListener("load",() => {
+    window.addEventListener("load", () => {
       document.getElementById("logo").classList.add("is-loaded")
       document.getElementById("lazyMessage").style.display = "none"
     })
     // 読み込みに5秒以上かかった場合は、メッセージを表示
     setTimeout(() => document.getElementById("lazyMessage").style.display = "block", 5000)
+
+    // キャッシュストレージ及びservice worker を削除
+    // 削除すると自動で最新版がサーバーから取得される
+    const clearCache = () => {
+      console.log("[OPSTID Timetable] Cache Cleared")
+      // https://qiita.com/igara/items/9564008194c74e12551e
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        // 登録されているworkerを全て削除する
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+      caches.keys().then(function (keys) {
+        var promises = [];
+        // キャッシュストレージを全て削除する
+        keys.forEach(function (cacheName) {
+          if (cacheName) {
+            promises.push(caches.delete(cacheName));
+          }
+        });
+      })
+
+      // 最終アップデート日を記録
+      localStorage.setItem(lastUpdateDateLocalStorageKey, YYYYMMDD)
+      // ページをリロード
+      location.reload()
+    }
   </script>
 </head>
 
@@ -97,8 +129,8 @@
   <div id="loader">
     <img id="logo" src="/img/appname.svg" />
     <div style="font-size:0.8em;display:none;" id="lazyMessage">
-      読み込みに時間がかかっています<br>
-      <a href="javascript:void(0)" onclick="location.reload()">ページをリロードする</a>
+      読み込みに時間がかかっています。<br>
+      <a href="javascript:void(0)" onclick="clearCache()">ページをリロードする</a>
     </div>
   </div>
   <script type="module" src="/src/main.ts"></script>
