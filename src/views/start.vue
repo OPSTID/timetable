@@ -1,10 +1,10 @@
 <template>
-    <IonPage>
+    <IonPage ref="page">
         <IonHeader>
             <IonToolbar>
-                <IonButtons slot="start">
+                <!--<IonButtons slot="start">
                     <IonBackButton default-href="/" text="戻る"></IonBackButton>
-                </IonButtons>
+                </IonButtons>-->
                 <IonTitle>ようこそ</IonTitle>
             </IonToolbar>
         </IonHeader>
@@ -62,7 +62,7 @@
                     </IonItem>
                 </IonList>
                 <IonListHeader>2. 規約等への同意</IonListHeader>
-                <IonList inset>
+                <IonList inset lines="none">
                     <IonItem>
                         <IonLabel>
                             <h3 class="ion-text-wrap">
@@ -70,9 +70,22 @@
                             </h3>
                         </IonLabel>
                     </IonItem>
-                    <IonItem href="/info/terms?closebutton=1" target="_blank" @click="state.isTermsLinkClicked = true">
+                    <IonItem button @click="state.isTermsLinkClicked = true" id="terms-modal-trigger">
                         <IonText color="primary"><strong>利用規約・プライバシーポリシーを確認する</strong></IonText>
                     </IonItem>
+                    <IonModal ref="termsModal" trigger="terms-modal-trigger" :presenting-element="state.presentingElement">
+                        <IonHeader>
+                            <IonToolbar>
+                                <IonTitle>利用規約・プライバシーポリシー</IonTitle>
+                                <IonButtons slot="end">
+                                    <IonButton @click="termsModal.$el.dismiss()"><strong>閉じる</strong></IonButton>
+                                </IonButtons>
+                            </IonToolbar>
+                        </IonHeader>
+                        <IonContent color="light">
+                            <MarkdownView :markdown="state.termsMarkdown"></MarkdownView>
+                        </IonContent>
+                    </IonModal>
                 </IonList>
                 <IonList inset>
                     <IonItem :disabled="!state.isTermsLinkClicked">
@@ -130,13 +143,14 @@
 </template>
 
 <script setup lang="ts">
-import { IonBackButton, IonButton, IonButtons, IonCheckbox, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar, alertController, loadingController } from '@ionic/vue';
+import { IonBackButton, IonButton, IonButtons, IonCheckbox, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonModal, IonPage, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar, alertController, loadingController } from '@ionic/vue';
 import { alertCircle, checkmarkCircle, checkmarkOutline } from 'ionicons/icons';
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { db } from '@/db';
 import { useExtractedObservable } from '@vueuse/rxjs';
+import MarkdownView from '@/components/markdownView.vue';
 
 const router = useRouter()
 const state = reactive({
@@ -144,8 +158,20 @@ const state = reactive({
     timetable: 0, // 学年・学期＝使用する時間割の選択
     isTermsLinkClicked: false, // 利用規約へのリンクをクリックしたかどうか
     isAgreeTerms: false, // 利用規約への同意
-    isAgreeStatement: false // 重要事項への同意
+    termsMarkdown: "", // 利用規約・プライバシーポリシーのマークダウン
+    isAgreeStatement: false, // 重要事項への同意
+    presentingElement: <null | HTMLElement> null
 })
+const page = ref()
+const termsModal = ref()
+
+// 利用規約をダウンロード
+const loadTerms = async () => {
+    const res = await fetch("/md-docs/terms.md")
+    state.termsMarkdown = await res.text()
+}
+
+loadTerms()
 
 // 初期設定済みなら、ホーム画面に移動
 db.kvs.get("isInited").then(result => {
@@ -230,4 +256,8 @@ const start = async () => {
         alert.present()
     }, 3000)
 }
+
+onMounted(() => {
+    state.presentingElement = page.value.$el
+})
 </script>

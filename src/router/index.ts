@@ -8,6 +8,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     component: () => import("@/views/index.vue")
   },
+  // インストール
+  {
+    path: '/install',
+    component: () => import("@/views/install.vue")
+  },
+  {
+    // PWAで起動
+    path: '/pwa',
+    component: () => import("@/views/pwa.vue")
+  },
   {
     path: '/member',
     redirect: '/member/home'
@@ -65,11 +75,6 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   /* 初期登録済み専用ページ終了 */
-  // LPページ
-  {
-    path: "/lp",
-    component: () => import("@/views/lp.vue")
-  },
   // 初期登録ページ
   {
     path: '/start',

@@ -18,19 +18,23 @@
                 <span class="timetable-gradient-text">Timetable</span>
               </IonLabel>
             </ion-title>
-            <!--時間割選択ボタン-->
             <IonButtons slot="end">
-              <IonButton color="dark" fill="solid" size="small" router-link="/member/change-timetable">
-                <IonLabel>
-                  時間割を選択
-                </IonLabel>
-                <IonIcon :icon="chevronForward" slot="end" size="small"></IonIcon>
+              <!--QRコードリーダー-->
+              <IonButton color="dark" router-link="/member/qr-reader">
+                <IonIcon :icon="qrCodeOutline" slot="icon-only"></IonIcon>
+              </IonButton>
+              <!--空白-->
+              <div style="width:1em"></div>
+              <!--時間割選択ボタン-->
+              <IonButton color="dark" router-link="/member/change-timetable">
+                <IonIcon :icon="calendarOutline" slot="icon-only"></IonIcon>
               </IonButton>
             </IonButtons>
           </ion-toolbar>
         </ion-header>
         <!--現在（今後）の授業などを表示するNow機能-->
         <div v-if="state.isActiveNow">
+          <!--ヘッダーは非表示にしています-->
           <IonListHeader v-if="false">
             <IonLabel style="margin-top:0px;">
               Now
@@ -160,12 +164,12 @@
             @click="state.selectedDay = state.todayDay" class="ion-margin-bottom">
             今日
           </IonButton>
-          <IonButton size="small" class="ion-margin-bottom" id="open-timetable-modal">
+          <IonButton size="small" class="ion-margin-bottom" @click="modalState.timetableModal.present()">
             <IonIcon :icon="calendar" slot="start"></IonIcon>
             時間割表
           </IonButton>
           <!--時間割表モーダル-->
-          <IonModal ref="timetableModal" trigger="open-timetable-modal" :presenting-element="presentingElement">
+          <IonModal ref="timetableModal" :presenting-element="presentingElement">
             <TimetableModal :dismiss="modalState.timetableModal.dismiss"></TimetableModal>
           </IonModal>
         </IonListHeader>
@@ -249,7 +253,7 @@ import Assignments from '@/components/modal/assignments.vue';
 import TimetableModal from '@/components/modal/timetable-modal.vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonLabel, IonSegment, IonSegmentButton, IonList, IonItem, IonText, IonListHeader, IonButton, IonIcon, IonBadge, IonModal, IonButtons, IonCol, IonRow, loadingController, toastController, IonRefresher, IonRefresherContent, IonPopover, IonActionSheet, IonSpinner, IonSkeletonText, IonChip } from '@ionic/vue';
 import { useHead } from "@unhead/vue"
-import { addCircle, albumsOutline, alertCircle, arrowDown, calendar, calendarOutline, caretDown, checkmarkCircle, chevronDown, chevronForward, cogOutline, documentTextOutline, documents, documentsOutline, eyeOff, hourglass, hourglassOutline, linkOutline, menu, personCircleOutline, personOutline, reload, reloadCircle, rocket, shareOutline, tabletLandscape, time, videocam } from 'ionicons/icons';
+import { addCircle, albumsOutline, alertCircle, arrowDown, calendar, calendarOutline, qrCodeOutline, checkmarkCircle, chevronDown, chevronForward, cogOutline, documentTextOutline, documents, documentsOutline, eyeOff, hourglass, hourglassOutline, linkOutline, menu, personCircleOutline, personOutline, reload, reloadCircle, rocket, shareOutline, tabletLandscape, time, videocam } from 'ionicons/icons';
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { routerKey, useRouter } from 'vue-router';
 
@@ -340,12 +344,25 @@ const defaultInterval = setInterval(() => {
   state.todayDay = new Date().getDay()
 }, 600)
 
+// ブラウザの戻るボタンで時間割表モーダルを閉じる
+const onTimetablePopstate = (e:PopStateEvent) => {
+  modalState.timetableModal.dismiss()
+}
 
 const modalState = reactive({
   // 時間割表モーダル
   timetableModal: {
+    present(){
+      timetableModal.value.$el.present()
+      // ブラウザの戻るボタンで戻れるように、ダミーの履歴を追加
+      // 参考: https://qiita.com/gekijin/items/b804bf9203fd5558188b
+
+      history.pushState("timetableModal", "", location.href)
+      window.addEventListener("popstate", onTimetablePopstate)
+    },
     dismiss() {
       timetableModal.value.$el.dismiss()
+      window.removeEventListener("popstate", onTimetablePopstate)
     }
   },
   settingsPopOver: {

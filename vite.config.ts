@@ -29,7 +29,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
         purpose: 'maskable'
       }
     ],
-    start_url:"/",
+    start_url:"/pwa",
     background_color: "#fff",
     theme_color:"#fff",
     lang:"ja"
@@ -44,7 +44,16 @@ const pwaOptions: Partial<VitePWAOptions> = {
     'img/icon_one.png',
     'img/icon_one.svg',
     'img/opstid_icon.svg',
-    'img/appname.svg'
+    'img/appname.svg',
+    'img/qrcode_timetable.opstid.com.png',
+    'font/LINESeedJP/WOFF/LINESeedJP_OTF_Bd.woff',
+    'font/LINESeedJP/WOFF/LINESeedJP_OTF_Eb.woff',
+    'font/LINESeedJP/WOFF/LINESeedJP_OTF_Rg.woff',
+    'font/LINESeedJP/WOFF/LINESeedJP_OTF_Th.woff',
+    'font/LINESeedJP/WOFF2/LINESeedJP_OTF_Bd.woff2',
+    'font/LINESeedJP/WOFF2/LINESeedJP_OTF_Eb.woff2',
+    'font/LINESeedJP/WOFF2/LINESeedJP_OTF_Rg.woff2',
+    'font/LINESeedJP/WOFF2/LINESeedJP_OTF_Th.woff2',
   ]
 }
 

@@ -28,22 +28,15 @@
                 <div v-else-if="state.isLoading" class="ion-text-center ion-padding-top ion-margin-top">
                     <IonSpinner style="width:2em;height:2em;" />
                 </div>
-                <IonList inset v-else v-for="markdownHTML in state.markdownHTMLs">
-                    <IonItem>
-                        <!--コンテンツ表示エリア-->
-                        <IonLabel v-html="markdownHTML" class="ion-text-wrap"></IonLabel>
-                    </IonItem>
-                </IonList>
+                <MarkdownView v-else :markdown="state.markdown"></MarkdownView>
             </IonGrid>
         </IonContent>
     </IonPage>
 </template>
 <script setup lang="ts">
+import MarkdownView from '@/components/markdownView.vue';
 import { IonBackButton, IonButton, IonButtons, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonPage, IonRefresher, IonRefresherContent, IonSkeletonText, IonSpinner, IonTitle, IonToolbar, alertController } from '@ionic/vue';
 import { reload } from 'ionicons/icons';
-
-import { marked } from 'marked';
-import DOMPurify from "dompurify"
 
 import { reactive } from 'vue';
 import { useRoute } from 'vue-router';
@@ -53,7 +46,7 @@ const route = useRoute()
 const state = reactive({
     isLoading: true, // 読込中かどうか
     isError: false, // エラーが発生したか
-    markdownHTMLs: <string[]>[], // 表示するマークダウンの変換後のHTMLs
+    markdown:"", // 表示するマークダウン
     isActiveCloseButton: false // 閉じるボタンを表示するか（表示しない場合は、戻るボタンを表示）
 })
 
@@ -66,17 +59,7 @@ const closeWindow = () => {
     window.close()
 }
 
-// marked.js の設定
-// ヘッダーに<strong>を付与
-const renderer = {
-    heading(text:string, level:number){
-        return `<h${level}><strong>${text}</strong></h${level}>`
-    },
-    link(href:string, title: any, text: string){
-        return `<a href=${href} target="_blank">${text}</a>`   
-    }
-}
-marked.use({renderer})
+
 
 // マークダウンをサーバーから取得して表示
 const loadMarkdown = async () => {
@@ -108,13 +91,8 @@ const loadMarkdown = async () => {
     console.log(mime)
     // mime-type が text/markdown なら変換して表示
     if (mime === "text/markdown" || mime === null) {
-        // marked.js で変換後、dompurifyでHTMLを安全な形にする
-        let markdownHTML = DOMPurify.sanitize(await marked.parse(mdText, { breaks: true }), { ADD_ATTR: ['target'] })
-        
-        // <hr> で区切る
-        state.markdownHTMLs = markdownHTML.split("<hr>")
-
         setTimeout(() => state.isLoading = false, 500)
+        state.markdown = mdText
     } else {
         state.isError = true
     }

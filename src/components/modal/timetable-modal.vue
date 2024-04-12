@@ -3,7 +3,7 @@
     <ion-toolbar>
       <ion-title>時間割表</ion-title>
       <IonButtons slot="end">
-        <IonButton @click="props.dismiss"><strong>完了</strong></IonButton>
+        <IonButton @click="historyBack"><strong>完了</strong></IonButton>
       </IonButtons>
     </ion-toolbar>
   </ion-header>
@@ -56,6 +56,8 @@ const openClassDetailPage = (day:number, period:number) => {
   props.dismiss()
   setTimeout(() => router.push(`/member/period/${day}/${period}`), 300)
 }
+
+const historyBack = () => history.back()
 
 setInterval(updateTimetable, 500)
 </script>

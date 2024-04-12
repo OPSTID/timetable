@@ -65,7 +65,7 @@
                     <p>他の端末で作成した授業情報をQRコードを読み取ることでコピーできます</p>
                 </IonLabel>
             </IonItem>
-            
+
         </IonList>
         <IonList inset>
             <IonItem @click="loadClassData" button>
@@ -150,7 +150,7 @@
         <IonHeader>
             <IonToolbar>
                 <IonButtons slot="start">
-                    <IonButton @click="editModalState.cancel()">キャンセル</IonButton>
+                    <IonButton @click="historyBack()">キャンセル</IonButton>
                 </IonButtons>
                 <IonTitle>編集</IonTitle>
                 <IonButtons slot="end">
@@ -328,6 +328,13 @@ const state = reactive({
     }
 })
 
+// ブラウザの戻るボタンが押されたとき、モーダルを閉じるか確認
+const onEditModalPopstate = (e: PopStateEvent) => {
+    editModalState.cancel()
+}
+const historyBack = () => {
+    history.back()
+}
 // 編集モーダルの状況
 const editModalState = reactive({
     // 授業情報
@@ -348,10 +355,16 @@ const editModalState = reactive({
     onDidPresent() {
         window.addEventListener("beforeunload", editModalState.onBeforeUnload)
         //console.log("present")
+        // ブラウザの戻るボタンで戻れるように、ダミーの履歴を追加
+        // 参考: https://qiita.com/gekijin/items/b804bf9203fd5558188b
+
+        history.pushState("timetableModal", "", location.href)
+        window.addEventListener("popstate", onEditModalPopstate)
     },
     // 閉じられたとき
     onDidDismiss() {
         window.removeEventListener("beforeunload", editModalState.onBeforeUnload)
+        window.removeEventListener("popstate", onEditModalPopstate)
         //console.log("dismiss")
     },
     // キャンセル
@@ -359,8 +372,15 @@ const editModalState = reactive({
         const alert = await alertController.create({
             header: "キャンセルしますか？",
             message: "キャンセルすると、入力内容が破棄されます",
+            backdropDismiss: false,
             buttons: [
-                '入力を続ける',
+                {
+                    text: '入力を続ける',
+                    handler() {
+                        // ブラウザの履歴を戻す
+                        history.pushState("timetableModal", "", location.href)
+                    }
+                },
                 {
                     text: "キャンセルする",
                     role: "destructive",
@@ -485,63 +505,155 @@ const editModalState = reactive({
         // 編集モーダルを閉じる
         editModal.value.$el.dismiss()
     },
-    // リンク作成
+    // リンク・ミーティング追加
     async openCreateLinkAlert() {
-        const alert = await alertController.create({
-            backdropDismiss: false,
-            header: "リンクの追加",
-            message: "リンクのタイトルとURLを入力してください。Zoom などのオンラインミーティングのURLを登録すると、ワンストップで参加できて便利です。",
-            inputs: [
+        const firstAlert = await alertController.create({
+            header: "リンク・ミーティングの追加",
+            subHeader: "どちらを追加しますか？",
+            message: "ミーティングをURLで追加する場合は「URLを追加」を選んでください",
+            buttons: [
                 {
-                    placeholder: "タイトル(例:講義資料)"
+                    text: 'URLを追加',
+                    async handler() {
+                        const urlAlert = await alertController.create({
+                            backdropDismiss: false,
+                            header: "リンクの追加",
+                            message: "リンクのタイトルとURLを入力してください。Zoom, Webex などのオンラインミーティングのURLを登録すると、ワンストップで参加できて便利です。",
+                            inputs: [
+                                {
+                                    placeholder: "タイトル(例:講義資料)"
+                                },
+                                {
+                                    placeholder: "リンクのURL",
+                                    type: "url"
+                                }
+                            ],
+                            buttons: [
+                                "キャンセル",
+                                {
+                                    text: "完了",
+                                    async handler(value) {
+                                        const name = value[0]
+                                        const url = value[1]
+
+                                        // タイトルが入力されていなければキャンセル
+                                        if (name === "") {
+                                            const toast = await toastController.create({
+                                                message: "タイトルが入力されていません",
+                                                color: "dark",
+                                                duration: 1500,
+                                            })
+                                            toast.present()
+                                            return
+                                        }
+                                        // URLが正しい形式かどうか検証
+                                        const urlPatternRegExp = /^https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+$/
+                                        // 正しくなければキャンセル
+                                        if (!urlPatternRegExp.test(url)) {
+                                            const toast = await toastController.create({
+                                                message: "URLが正しい形式ではありません",
+                                                color: "dark",
+                                                duration: 1500,
+                                            })
+                                            toast.present()
+                                            return
+                                        }
+
+                                        // 適用
+                                        editModalState.classData.links.push({
+                                            name: name,
+                                            url: url
+                                        })
+                                    }
+                                }
+                            ]
+                        })
+                        urlAlert.present()
+                    }
                 },
                 {
-                    placeholder: "リンクのURL",
-                    type: "url"
-                }
-            ],
-            buttons: [
-                "キャンセル",
-                {
-                    text: "リンクを追加",
-                    async handler(value) {
-                        const name = value[0]
-                        const url = value[1]
+                    text: 'ミーティングを追加',
+                    async handler() {
+                        const meetingSelectAlert = await alertController.create({
+                            header: "プラットフォームの選択",
+                            message: "現在、Zoomのみサポートしています。それ以外のミーティングアプリを利用する場合は、「戻る→URLを追加」からミーティングのURLを追加してください。",
+                            buttons: [
+                                {
+                                    text: 'Zoom ミーティングを追加',
+                                    async handler() {
+                                        const zoomAlert = await alertController.create({
+                                            header: 'Zoom ミーティングを追加',
+                                            message: 'リンクのタイトルとZoom PMI（空白不要）を入力してください',
+                                            inputs: [
+                                                {
+                                                    placeholder: "タイトル(例:オンライン授業)"
+                                                },
+                                                {
+                                                    placeholder: "Zoom PMI",
+                                                    type: "number"
+                                                }
+                                            ],
+                                            buttons: [
+                                                'キャンセル',
+                                                {
+                                                    text: '完了',
+                                                    async handler(value) {
+                                                        const name = value[0]
+                                                        // 空白を削除する
+                                                        const pmi = value[1].split(" ").join("")
 
-                        // タイトルが入力されていなければキャンセル
-                        if (name === "") {
-                            const toast = await toastController.create({
-                                message: "タイトルが入力されていません",
-                                color: "dark",
-                                duration: 1500,
-                            })
-                            toast.present()
-                            return
-                        }
-                        // URLが正しい形式かどうか検証
-                        const urlPatternRegExp = /^https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+$/
-                        // 正しくなければキャンセル
-                        if (!urlPatternRegExp.test(url)) {
-                            const toast = await toastController.create({
-                                message: "URLが正しい形式ではありません",
-                                color: "dark",
-                                duration: 1500,
-                            })
-                            toast.present()
-                            return
-                        }
+                                                        // タイトルが入力されていなければキャンセル
+                                                        if (name === "") {
+                                                            const toast = await toastController.create({
+                                                                message: "タイトルが入力されていません",
+                                                                color: "dark",
+                                                                duration: 1500,
+                                                            })
+                                                            toast.present()
+                                                            return
+                                                        }
+                                                        // PMIが正しい形式（半角数字と半角スペースのみ）かどうか検証
+                                                        const pmiRegexp = /^\d+$/
+                                                        // 正しくなければキャンセル
+                                                        if (!pmiRegexp.test(pmi)) {
+                                                            const toast = await toastController.create({
+                                                                message: "Zoom PMIの形式が正しくありません",
+                                                                color: "dark",
+                                                                duration: 1500,
+                                                            })
+                                                            toast.present()
+                                                            return
+                                                        }
 
-                        // 適用
-                        editModalState.classData.links.push({
-                            name: name,
-                            url: url
+                                                        // 適用
+                                                        editModalState.classData.links.push({
+                                                            name: name,
+                                                            url: "https://zoom.us/j/" + pmi
+                                                        })
+                                                    }
+                                                }
+                                            ]
+                                        })
+
+                                        zoomAlert.present()
+                                    }
+                                },
+                                {
+                                    text: '戻る',
+                                    handler(){
+                                        editModalState.openCreateLinkAlert()
+                                    }
+                                },
+                            ]
                         })
+                        meetingSelectAlert.present()
                     }
-                }
+                },
+                'キャンセル'
             ]
         })
 
-        alert.present()
+        firstAlert.present()
     },
     removeLink: async (index: number) => {
         const alert = await alertController.create({
@@ -640,11 +752,11 @@ const launchQrReader = async () => {
     const alert = await alertController.create({
         header: "お知らせ",
         message: "次の画面でカメラへのアクセス許可を求められた場合は、「許可」をお願いします。",
-        buttons:[
+        buttons: [
             'キャンセル',
             {
                 text: '次に進む',
-                handler(){
+                handler() {
                     router.push("/member/qr-reader")
                 }
             }

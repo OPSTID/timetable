@@ -35,6 +35,13 @@
               </p>
             </IonLabel>
           </IonItem>
+          <!--<IonItem button router-link="/member/">
+            <IonIcon :icon="timeOutline" slot="start"></IonIcon>
+            <IonLabel class="ion-text-wrap">
+              時限の時間設定
+              <p>各時限の開始時間・終了時間を設定できます</p>
+            </IonLabel>
+          </IonItem>-->
           <IonItem button router-link="/app-qrcode">
             <IonIcon :icon="shareOutline" slot="start"></IonIcon>
             <IonLabel>
@@ -66,7 +73,7 @@
           </IonItem>
           <IonItem>
             <IonLabel>バージョン</IonLabel>
-            <IonLabel slot="end">20240406.0 (beta)</IonLabel>
+            <IonLabel slot="end">20240412.0 (beta)</IonLabel>
           </IonItem>
           <IonItem>
             <IonLabel>最終チェック日時</IonLabel>
@@ -139,7 +146,7 @@
 </template>
 <script setup lang="ts">
 import { IonAvatar, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonSpinner, IonText, IonThumbnail, IonTitle, IonToolbar, alertController, toastController } from '@ionic/vue';
-import { albumsOutline, alert, calendarOutline, codeOutline, cogOutline, person, personCircle, shareOutline } from 'ionicons/icons';
+import { albumsOutline, timeOutline, calendarOutline, codeOutline, cogOutline, person, personCircle, shareOutline } from 'ionicons/icons';
 import { onMounted, reactive } from 'vue';
 
 import { db } from '@/db';
