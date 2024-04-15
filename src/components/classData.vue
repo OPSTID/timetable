@@ -504,6 +504,10 @@ const editModalState = reactive({
         state.isFound = true
         // 編集モーダルを閉じる
         editModal.value.$el.dismiss()
+        // ブラウザで戻った時のイベントを削除
+        window.removeEventListener("popstate", onEditModalPopstate)
+        // モーダルの履歴を戻す
+        history.back()
     },
     // リンク・ミーティング追加
     async openCreateLinkAlert() {

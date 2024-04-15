@@ -73,7 +73,7 @@
           </IonItem>
           <IonItem>
             <IonLabel>バージョン</IonLabel>
-            <IonLabel slot="end">20240412.0 (beta)</IonLabel>
+            <IonLabel slot="end">20240415.0 (beta)</IonLabel>
           </IonItem>
           <IonItem>
             <IonLabel>最終チェック日時</IonLabel>

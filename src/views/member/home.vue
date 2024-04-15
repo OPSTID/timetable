@@ -24,38 +24,28 @@
                 <IonIcon :icon="qrCodeOutline" slot="icon-only"></IonIcon>
               </IonButton>
               <!--空白-->
-              <div style="width:1em"></div>
+              <div style="width:0.5em"></div>
               <!--時間割選択ボタン-->
-              <IonButton color="dark" router-link="/member/change-timetable">
-                <IonIcon :icon="calendarOutline" slot="icon-only"></IonIcon>
+              <IonButton color="dark" id="menu-popover-trigger">
+                <IonIcon :icon="ellipsisHorizontalCircleOutline" slot="icon-only"></IonIcon>
               </IonButton>
+              <IonPopover trigger="menu-popover-trigger" side="bottom" ref="menuPopover">
+                <IonList lines="none">
+                  <IonItem button router-link="/member/change-timetable" @click="menuPopover.$el.dismiss()">
+                    <IonLabel>時間割の選択</IonLabel>
+                    <IonIcon :icon="listOutline" slot="end"></IonIcon>
+                  </IonItem>
+                  <IonItem button @click="menuPopover.$el.dismiss(); modalState.textCounterModal.present()">
+                    <IonLabel>文字数カウント</IonLabel>
+                    <IonIcon :icon="flagOutline" slot="end"></IonIcon>
+                  </IonItem>
+                </IonList>
+              </IonPopover>
             </IonButtons>
           </ion-toolbar>
         </ion-header>
         <!--現在（今後）の授業などを表示するNow機能-->
         <div v-if="state.isActiveNow">
-          <!--ヘッダーは非表示にしています-->
-          <IonListHeader v-if="false">
-            <IonLabel style="margin-top:0px;">
-              Now
-              <!--点滅するドット（次の授業までの時間で色分け）-->
-              <span v-if="state.currentClass.isLoaded">
-                <!--次の授業まで、10分以上のとき-->
-                <div class="now-dot" v-if="!state.currentClass.isNow || state.currentClass.startIn > 10"
-                  style="background-color:var(--ion-color-primary)"></div>
-                <!--次の授業まで10分以下のとき-->
-                <div class="now-dot" v-else-if="state.currentClass.startIn > 0"
-                  style="background-color:var(--ion-color-warning)"></div>
-                <!--授業中など-->
-                <div class="now-dot" v-else></div>
-              </span>
-
-              <p>授業情報を確認しよう</p>
-            </IonLabel>
-            <IonButton size="small" class="ion-margin-bottom" v-if="state.isActiveNow"
-              @click="state.isActiveNow = false">
-              非表示にする</IonButton>
-          </IonListHeader>
           <!--読み込み中-->
           <div v-if="!state.currentClass.isLoaded">
             <IonList inset>
@@ -81,7 +71,8 @@
                 <IonLabel class="ion-text-wrap">
                   <h2><strong>授業を登録して使ってみよう</strong></h2>
                   <p>{{ state.nickname }}さん、Timetable アプリをご利用いただきありがとうございます！<br>下の「曜日別の時間割」で、<IonText color="primary">
-                      <strong>授業のある曜日</strong></IonText>を選んで、<IonText color="primary"><strong>時限をタップ</strong></IonText>
+                      <strong>授業のある曜日</strong>
+                    </IonText>を選んで、<IonText color="primary"><strong>時限をタップ</strong></IonText>
                     すると授業を登録できます↓</p>
                 </IonLabel>
               </IonItem>
@@ -100,7 +91,7 @@
                 </h3>
                 <p>
                   <span>{{
-      state.currentClass.classData?.period }}時限・{{ state.currentClass.classData?.startTime
+                    state.currentClass.classData?.period }}時限・{{ state.currentClass.classData?.startTime
                     }}-{{ state.currentClass.classData?.endTime }}</span>
                 </p>
                 <h1><strong>{{ state.currentClass.classData?.name }}</strong></h1>
@@ -168,10 +159,6 @@
             <IonIcon :icon="calendar" slot="start"></IonIcon>
             時間割表
           </IonButton>
-          <!--時間割表モーダル-->
-          <IonModal ref="timetableModal" :presenting-element="presentingElement">
-            <TimetableModal :dismiss="modalState.timetableModal.dismiss"></TimetableModal>
-          </IonModal>
         </IonListHeader>
         <div class="timetable-header">
           <div class="ion-padding-top"></div>
@@ -215,7 +202,7 @@
               <IonLabel v-if="state.timetable[day] && !!state.timetable[day]![period]">
                 <!--時限、授業時間-->
                 <p>{{ period }}時限目・{{ state.timetable[day]![period].startTime }}-{{
-      state.timetable[day]![period].endTime }}</p>
+                  state.timetable[day]![period].endTime }}</p>
                 <!--科目名-->
                 <h2><strong>{{ state.timetable[day]![period].name }}</strong></h2>
 
@@ -244,26 +231,36 @@
         </div>
 
       </IonGrid>
+
+      <!--モーダル-->
+      <!--時間割表モーダル-->
+      <IonModal ref="timetableModal" :presenting-element="presentingElement">
+        <TimetableModal :dismiss="modalState.timetableModal.dismiss"></TimetableModal>
+      </IonModal>
+      <!--文字数カウンターモーダル-->
+      <IonModal ref="textCounterModal" :presenting-element="presentingElement">
+        <TextCounter></TextCounter>
+      </IonModal>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import Assignments from '@/components/modal/assignments.vue';
 import TimetableModal from '@/components/modal/timetable-modal.vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonLabel, IonSegment, IonSegmentButton, IonList, IonItem, IonText, IonListHeader, IonButton, IonIcon, IonBadge, IonModal, IonButtons, IonCol, IonRow, loadingController, toastController, IonRefresher, IonRefresherContent, IonPopover, IonActionSheet, IonSpinner, IonSkeletonText, IonChip } from '@ionic/vue';
-import { useHead } from "@unhead/vue"
-import { addCircle, albumsOutline, alertCircle, arrowDown, calendar, calendarOutline, qrCodeOutline, checkmarkCircle, chevronDown, chevronForward, cogOutline, documentTextOutline, documents, documentsOutline, eyeOff, hourglass, hourglassOutline, linkOutline, menu, personCircleOutline, personOutline, reload, reloadCircle, rocket, shareOutline, tabletLandscape, time, videocam } from 'ionicons/icons';
+import { calendar, ellipsisHorizontalCircleOutline, qrCodeOutline, checkmarkCircle, listOutline, flagOutline, documentTextOutline, documents, documentsOutline, eyeOff, hourglass, hourglassOutline, linkOutline, menu, personCircleOutline, personOutline, reload, reloadCircle, rocket, shareOutline, tabletLandscape, time, videocam } from 'ionicons/icons';
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { routerKey, useRouter } from 'vue-router';
 
 import { api, classData, db } from '@/db';
 import linkItem from '@/components/linkItem.vue';
+import TextCounter from '@/components/modal/text-counter.vue';
 
 const router = useRouter()
 
 const page = ref()
 const timetableModal = ref()
+const textCounterModal = ref()
 const menuPopover = ref()
 
 const presentingElement = ref()
@@ -345,14 +342,18 @@ const defaultInterval = setInterval(() => {
 }, 600)
 
 // ブラウザの戻るボタンで時間割表モーダルを閉じる
-const onTimetablePopstate = (e:PopStateEvent) => {
+const onTimetablePopstate = (e: PopStateEvent) => {
   modalState.timetableModal.dismiss()
+}
+
+const onTextCounterPopstate = (e: PopStateEvent) => {
+  modalState.textCounterModal.dismiss()
 }
 
 const modalState = reactive({
   // 時間割表モーダル
   timetableModal: {
-    present(){
+    present() {
       timetableModal.value.$el.present()
       // ブラウザの戻るボタンで戻れるように、ダミーの履歴を追加
       // 参考: https://qiita.com/gekijin/items/b804bf9203fd5558188b
@@ -363,6 +364,21 @@ const modalState = reactive({
     dismiss() {
       timetableModal.value.$el.dismiss()
       window.removeEventListener("popstate", onTimetablePopstate)
+    }
+  },
+  // 文字数カウンターモーダル
+  textCounterModal: {
+    present() {
+      textCounterModal.value.$el.present()
+      // ブラウザの戻るボタンで戻れるように、ダミーの履歴を追加
+      // 参考: https://qiita.com/gekijin/items/b804bf9203fd5558188b
+
+      history.pushState("textCounterModal", "", location.href)
+      window.addEventListener("popstate", onTextCounterPopstate)
+    },
+    dismiss() {
+      textCounterModal.value.$el.dismiss()
+      window.removeEventListener("popstate", onTextCounterPopstate)
     }
   },
   settingsPopOver: {
