@@ -35,13 +35,13 @@
               </p>
             </IonLabel>
           </IonItem>
-          <!--<IonItem button router-link="/member/">
+          <IonItem button router-link="/member/change-default-period-time">
             <IonIcon :icon="timeOutline" slot="start"></IonIcon>
-            <IonLabel class="ion-text-wrap">
+            <IonLabel>
               時限の時間設定
-              <p>各時限の開始時間・終了時間を設定できます</p>
+              <p class="ion-text-wrap">各時限の標準開始時間・終了時間を設定できます</p>
             </IonLabel>
-          </IonItem>-->
+          </IonItem>
           <IonItem button router-link="/app-qrcode">
             <IonIcon :icon="shareOutline" slot="start"></IonIcon>
             <IonLabel>
@@ -73,7 +73,7 @@
           </IonItem>
           <IonItem>
             <IonLabel>バージョン</IonLabel>
-            <IonLabel slot="end">20240415.0 (beta)</IonLabel>
+            <IonLabel slot="end">20240416.0 (beta)</IonLabel>
           </IonItem>
           <IonItem>
             <IonLabel>最終チェック日時</IonLabel>

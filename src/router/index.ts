@@ -53,6 +53,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/member/change-timetable',
     component: () => import("@/views/member/change-timetable.vue")
   },
+  // 時限の時間設定
+  {
+    path: '/member/change-default-period-time',
+    component: () => import("@/views/member/change-default-period-time.vue")
+  },
   // 時限詳細
   {
     path: '/member/period/:day/:period',

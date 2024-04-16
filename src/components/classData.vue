@@ -469,6 +469,28 @@ const editModalState = reactive({
                     room: editModalState.classData.room,
                     links: editModalState.classData.links
                 })
+
+                // 時限の時間設定がされていない場合は、入力内容を保存する
+                const startTimeResult = await db.kvs.get(`startEndTimes.starTime.${props.period}`)
+                const endTimeResult = await db.kvs.get(`startEndTimes.endTime.${props.period}`)
+
+                if(!startTimeResult || startTimeResult.value === ''){
+                    db.kvs.put({
+                        key: `startEndTimes.startTime.${props.period}`,
+                        value: editModalState.classData.startTime
+                    })
+                }
+                if(!endTimeResult || endTimeResult.value === ''){
+                    db.kvs.put({
+                        key: `startEndTimes.endTime.${props.period}`,
+                        value: editModalState.classData.endTime
+                    })
+                }
+            } else {
+                (await toastController.create({
+                    message: "時間割が選択されていないため、保存できませんでした",
+                    color:"danger"
+                }))
             }
         } else if (state.classData.id !== null && state.classData.timetableId !== null) {
             // 上書き保存の場合
@@ -644,7 +666,7 @@ const editModalState = reactive({
                                 },
                                 {
                                     text: '戻る',
-                                    handler(){
+                                    handler() {
                                         editModalState.openCreateLinkAlert()
                                     }
                                 },
@@ -742,6 +764,21 @@ const loadClassData = async () => {
 
         state.isFound = true
     } else {
+        // 授業がないとき
+
+        // 授業時間が設定されていればそれを編集モーダルに反映する
+        const startTimeResult = await db.kvs.get(`startEndTimes.startTime.${props.period}`)
+        const endTimeResult = await db.kvs.get(`startEndTimes.endTime.${props.period}`)
+
+        // console.log(startTimeResult, endTimeResult)
+
+        if (!!startTimeResult) {
+            editModalState.classData.startTime = <string>startTimeResult.value
+        }
+        if (!!endTimeResult) {
+            editModalState.classData.endTime = <string>endTimeResult.value
+        }
+
         state.isFound = false
     }
 
