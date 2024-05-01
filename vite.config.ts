@@ -54,6 +54,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
     'font/LINESeedJP/WOFF2/LINESeedJP_OTF_Eb.woff2',
     'font/LINESeedJP/WOFF2/LINESeedJP_OTF_Rg.woff2',
     'font/LINESeedJP/WOFF2/LINESeedJP_OTF_Th.woff2',
+    "/.well-known/assetlinks.json"
   ]
 }
 

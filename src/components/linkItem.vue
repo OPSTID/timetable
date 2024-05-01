@@ -1,7 +1,7 @@
 <template>
     <IonItem :button="props.clickable" @click="openUrl()">
         <IonIcon :icon="state.isMeetingUrl ? videocam : linkOutline" slot="start"></IonIcon>
-        <IonLabel>
+        <IonLabel class="ion-text-nowrap">
             <strong>{{ props.title }}</strong>
             <p>{{ props.url }}</p>
         </IonLabel>

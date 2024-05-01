@@ -50,14 +50,14 @@
                     <p>その他のオプション</p>
                 </IonLabel>
             </IonItem>
-            <IonItem button>
+            <!--<IonItem button>
                 <IonIcon :icon="copyOutline" slot="start" color="primary"></IonIcon>
                 <IonLabel class="ion-text-wrap">
                     <IonText color="primary">すでに作成済みの授業をコピー</IonText>
                     <p>次回アップデートで実装予定</p>
                 </IonLabel>
                 <IonBadge slot="end" color="danger">現在利用不可</IonBadge>
-            </IonItem>
+            </IonItem>-->
             <IonItem button @click="launchQrReader">
                 <IonIcon :icon="qrCodeOutline" slot="start" color="primary"></IonIcon>
                 <IonLabel class="ion-text-wrap">
@@ -285,7 +285,7 @@ import { addCircle, reloadCircle, qrCodeOutline, attachOutline, informationCircl
 import { UAParser } from "ua-parser-js"
 
 import { api, db } from '@/db'
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch, watchEffect } from 'vue';
 import { useRouter } from "vue-router";
 import linkItem from './linkItem.vue';
 
@@ -766,6 +766,23 @@ const loadClassData = async () => {
     } else {
         // 授業がないとき
 
+        // 変数を初期化
+        state.classData.name = ""
+        state.classData.teacher = ""
+        state.classData.room = ""
+        state.classData.startTime = ""
+        state.classData.endTime = ""
+        state.classData.links = []
+        state.classData.id = null // オートインクリメントにより、必ず存在する
+        state.classData.timetableId = null
+
+        editModalState.classData.name = ""
+        editModalState.classData.startTime = "00:00"
+        editModalState.classData.endTime = "00:00"
+        editModalState.classData.teacher = ""
+        editModalState.classData.room = ""
+        editModalState.classData.links = []
+
         // 授業時間が設定されていればそれを編集モーダルに反映する
         const startTimeResult = await db.kvs.get(`startEndTimes.startTime.${props.period}`)
         const endTimeResult = await db.kvs.get(`startEndTimes.endTime.${props.period}`)
@@ -806,6 +823,13 @@ const launchQrReader = async () => {
 
     alert.present()
 }
+
+// props.day, props.period が変更されたとき、loadClassDataを実行
+watch(props ,() => {
+    if(props.day !== undefined && props.period !== undefined){
+        loadClassData()
+    }
+})
 </script>
 <style scoped>
 input[type="time"] {

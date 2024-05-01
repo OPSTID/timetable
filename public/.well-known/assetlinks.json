@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.opstid.timetable.twa",
+      "sha256_cert_fingerprints":
+        ["DE:7D:62:05:1A:C1:D8:A5:50:EF:AC:22:1E:F5:E2:B5:73:67:DA:C7:68:15:C7:31:B2:AB:7F:A0:52:33:5F:4A"]
+    }
+  }
+]
