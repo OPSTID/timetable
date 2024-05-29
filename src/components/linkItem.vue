@@ -1,50 +1,52 @@
 <template>
-    <IonItem :button="props.clickable" @click="openUrl()">
-        <IonIcon :icon="state.isMeetingUrl ? videocam : linkOutline" slot="start"></IonIcon>
-        <IonLabel class="ion-text-nowrap">
-            <strong>{{ props.title }}</strong>
-            <p>{{ props.url }}</p>
-        </IonLabel>
-    </IonItem>
+  <IonItem :button="props.clickable" @click="openUrl()">
+    <IonIcon
+      :icon="state.isMeetingUrl ? videocam : linkOutline"
+      slot="start"
+    ></IonIcon>
+    <IonLabel class="ion-text-nowrap">
+      <strong>{{ props.title }}</strong>
+      <p>{{ props.url }}</p>
+    </IonLabel>
+  </IonItem>
 </template>
 <script setup lang="ts">
-import { IonIcon, IonItem, IonLabel, alertController } from '@ionic/vue';
-import { linkOutline, videocam } from 'ionicons/icons';
-import { reactive, watchEffect } from 'vue';
+import { IonIcon, IonItem, IonLabel } from "@ionic/vue";
+import { linkOutline, videocam } from "ionicons/icons";
+import { reactive, watchEffect } from "vue";
 
 const props = defineProps<{
-    title: string // リンクの名前（例：授業のホームページ）
-    url: string // リンクのURL
-    clickable: boolean // クリックしてリンクを開くかどうか
-}>()
+  title: string; // リンクの名前（例：授業のホームページ）
+  url: string; // リンクのURL
+  clickable: boolean; // クリックしてリンクを開くかどうか
+}>();
 
 const state = reactive({
-    isMeetingUrl: false // Zoom などのオンラインミーティングへのURLであるかどうか
-})
+  isMeetingUrl: false, // Zoom などのオンラインミーティングへのURLであるかどうか
+});
 
 // ミーティングURLの正規表現
 const meetingsRegExp = {
-    zoom: /https:\/\/(.*)\.?zoom\.us\/j\/.*/, // Zoom ミーティング URLの正規表現
-    cisco: /https:\/\/(.*).webex.com/ // Webex の正規表現
-    
-}
+  zoom: /https:\/\/(.*)\.?zoom\.us\/j\/.*/, // Zoom ミーティング URLの正規表現
+  cisco: /https:\/\/(.*).webex.com/, // Webex の正規表現
+};
 // ミーティングのURLかどうかを判別する
 watchEffect(() => {
-    let isMatch = false // ミーティングURLにマッチするものがあったか
-    Object.values(meetingsRegExp).forEach((regExp) => {
-        if(props.url.match(regExp)){
-            isMatch = true
-        }
-    })
+  let isMatch = false; // ミーティングURLにマッチするものがあったか
+  Object.values(meetingsRegExp).forEach((regExp) => {
+    if (props.url.match(regExp)) {
+      isMatch = true;
+    }
+  });
 
-    state.isMeetingUrl = isMatch
-})
+  state.isMeetingUrl = isMatch;
+});
 // リンクを開く
 const openUrl = async () => {
-    // クリック可能でないときは無視
-    if(!props.clickable) return;
-    // Zoom
-    /*if(props.url.match(meetingsRegExp.zoom)){
+  // クリック可能でないときは無視
+  if (!props.clickable) return;
+  // Zoom
+  /*if(props.url.match(meetingsRegExp.zoom)){
         // PMIをURLから取り出す
         const pmiMatch = new URL(props.url).pathname.match(/\/j\/(.*)/)
         if(!!pmiMatch){
@@ -82,10 +84,10 @@ const openUrl = async () => {
             alert.present()
         }
     }*/
-    // 他のミーティングアプリの場合は、特に動作を定義しない
-    // URLを開く
-    else {
-        window.open(props.url, "_blank")
-    }
-}
+  // 他のミーティングアプリの場合は、特に動作を定義しない
+  // URLを開く
+  else {
+    window.open(props.url, "_blank");
+  }
+};
 </script>
